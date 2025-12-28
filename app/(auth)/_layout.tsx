@@ -1,43 +1,74 @@
-import { Link, Tabs } from "expo-router";
-import { Button, useTheme } from "tamagui";
-import { Atom, AudioWaveform } from "@tamagui/lucide-icons";
+import { Tabs } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { useTheme, YStack } from "tamagui";
+import { LogIn, UserPlus } from "@tamagui/lucide-icons";
 
 export default function TabLayout() {
   const theme = useTheme();
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: theme.red10.val,
-        tabBarStyle: {
-          backgroundColor: theme.background.val,
-          borderTopColor: theme.borderColor.val,
-          display: "none",
-        },
-        headerStyle: {
-          backgroundColor: theme.background.val,
-          borderBottomColor: theme.borderColor.val,
-        },
-        headerTintColor: theme.color.val,
-      }}
-    >
-      <Tabs.Screen
-        name="login"
-        options={{
-          title: "Login",
+    <>
+      <StatusBar backgroundColor={theme.accent2.get()} style="inverted" />
+
+      <Tabs
+        screenOptions={{
           headerShown: false,
-          tabBarIcon: ({ color }) => <Atom color={color as any} />,
+          tabBarHideOnKeyboard: true,
+          tabBarActiveTintColor: theme.red10.get(),
+          tabBarStyle: {
+            backgroundColor: theme.background.get(),
+            borderTopColor: theme.borderColor.get(),
+          },
+          headerStyle: {
+            backgroundColor: theme.background.get(),
+            borderBottomColor: theme.borderColor.get(),
+          },
+          headerTintColor: theme.color.get(),
+          animation: "shift",
         }}
-      />
-      <Tabs.Screen
-        name="signup"
-        options={{
-          title: "Create Account",
-          headerShown: false,
-          tabBarIcon: ({ color }) => <AudioWaveform color={color as any} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="login/index"
+          options={{
+            title: "Login",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <YStack
+                animation="quick"
+                scale={focused ? 1.1 : 1}
+                background={
+                  focused ? theme.accentBackground.get() : "transparent"
+                }
+                rounded="$2"
+                p="$1"
+              >
+                <LogIn color={color as any} />
+              </YStack>
+            ),
+          }}
+        />
+
+        <Tabs.Screen
+          name="signup/index"
+          options={{
+            title: "Create Account",
+            headerShown: false,
+            tabBarIcon: ({ color, focused }) => (
+              <YStack
+                animation="quick"
+                scale={focused ? 1.1 : 1}
+                background={
+                  focused ? theme.accentBackground.get() : "transparent"
+                }
+                rounded="$2"
+                p="$1"
+              >
+                <UserPlus color={color as any} />
+              </YStack>
+            ),
+          }}
+        />
+      </Tabs>
+    </>
   );
 }

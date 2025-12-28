@@ -1,7 +1,10 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useMemo, ComponentProps } from "react";
 import { YStack, XStack, Paragraph } from "tamagui";
 
-export interface FormFieldProps {
+export interface FormFieldProps extends Pick<
+  ComponentProps<typeof YStack>,
+  "animation" | "enterStyle" | "exitStyle" | "gap"
+> {
   /**
    * Visible label text for the field.
    * If `id` is provided, the label will be associated with the input via htmlFor.
@@ -37,20 +40,6 @@ export interface FormFieldProps {
    * and `exitStyle` to this component and it will animate the container only.
    */
   children: React.ReactNode;
-
-  /**
-   * Optional animation props for the outer wrapper. These are forwarded to the
-   * top-level YStack so you can animate the whole field without touching the input.
-   */
-  animation?: string;
-  enterStyle?: any;
-  exitStyle?: any;
-
-  /**
-   * Vertical spacing between elements in the field (label / input / description).
-   * You can pass Tamagui spacing tokens like "$2" or numeric values.
-   */
-  gap?: any;
 }
 
 /**
@@ -107,7 +96,6 @@ const FormFieldComponent: React.FC<FormFieldProps> = ({
     );
   }, [label, icon, id]);
 
-  // Memoize helper (error/description) to avoid recreating markup on unrelated updates.
   const helper = useMemo(() => {
     if (error) {
       return (
@@ -134,10 +122,7 @@ const FormFieldComponent: React.FC<FormFieldProps> = ({
       gap={gap}
     >
       {labelRow}
-
-      {/* Render child control(s) directly — caller is responsible for input props */}
       <YStack>{children}</YStack>
-
       {helper}
     </YStack>
   );
