@@ -1,5 +1,13 @@
 import { useCallback, useState } from "react";
-import { YStack, XStack, Button, H2, Paragraph, ScrollView } from "tamagui";
+import {
+  YStack,
+  XStack,
+  Button,
+  H2,
+  Paragraph,
+  ScrollView,
+  useTheme,
+} from "tamagui";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { Eye, EyeOff } from "@tamagui/lucide-icons";
 import { validateForm } from "$lib/client/validate-form";
@@ -8,6 +16,7 @@ import { loginSchema } from "$lib/client/schema";
 import AnimatedLogo from "@/components/custom/branding/AnimatedLogo";
 import FormField from "@/components/custom/form-fields/form-field";
 import TextInput from "@/components/custom/form-fields/text-input";
+import { Link } from "expo-router";
 
 type Errors = {
   username: string[];
@@ -15,6 +24,7 @@ type Errors = {
 };
 
 export default function Page() {
+  const theme = useTheme();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -206,6 +216,19 @@ export default function Page() {
               </Button>
             </YStack>
           </YStack>
+          <XStack gap="$1" items="center" justify="center">
+            <Paragraph>Don't have an account yet?</Paragraph>
+            <Link
+              href="/signup"
+              style={{
+                textDecorationLine: "underline",
+                fontWeight: "900",
+                color: theme.accentColor.get(),
+              }}
+            >
+              Create new
+            </Link>
+          </XStack>
         </ScrollView>
       </YStack>
     </KeyboardAvoidingView>

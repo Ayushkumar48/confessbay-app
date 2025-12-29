@@ -1,11 +1,5 @@
-import { Text, View } from "tamagui";
+import Signup from "@/components/custom/(auth)/signup";
 
 export default function Page() {
-  return (
-    <View flex={1} items="center" justify="center" bg="$background">
-      <Text fontSize={20} color="$blue10">
-        Tab SignUp
-      </Text>
-    </View>
-  );
+  return <Signup />;
 }
