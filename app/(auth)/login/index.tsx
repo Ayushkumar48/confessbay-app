@@ -84,8 +84,7 @@ export default function Page() {
     >
       <YStack
         flex={1}
-        bg="$background"
-        animation="bouncy"
+        animation={{ type: "bouncy", duration: "800ms", delay: "200ms" }}
         enterStyle={{ opacity: 0, scale: 0.96 }}
         exitStyle={{ opacity: 0, scale: 0.96 }}
       >
@@ -95,7 +94,7 @@ export default function Page() {
               width="100%"
               maxW={420}
               p="$6"
-              animation="quick"
+              animation={{ type: "timing", duration: "600ms", delay: "200ms" }}
               enterStyle={{ opacity: 0, y: -14 }}
               exitStyle={{ opacity: 0, y: 14 }}
               gap="$5"
@@ -104,7 +103,11 @@ export default function Page() {
                 <AnimatedLogo size={64} initials="CB" animated />
                 <H2
                   color="$color"
-                  animation="quick"
+                  animation={{
+                    type: "timing",
+                    duration: "600ms",
+                    delay: "200ms",
+                  }}
                   enterStyle={{ opacity: 0, y: -6 }}
                 >
                   Welcome Back
@@ -116,7 +119,11 @@ export default function Page() {
 
               <FormField
                 label="Username or Email"
-                animation="quick"
+                animation={{
+                  type: "timing",
+                  duration: "600ms",
+                  delay: "200ms",
+                }}
                 enterStyle={{ opacity: 0, x: -12 }}
                 exitStyle={{ opacity: 0, x: 12 }}
                 error={errors.username?.[0] ?? null}
@@ -134,7 +141,11 @@ export default function Page() {
 
               <FormField
                 label="Password"
-                animation="quick"
+                animation={{
+                  type: "timing",
+                  duration: "1000ms",
+                  delay: "300ms",
+                }}
                 enterStyle={{ opacity: 0, x: 12 }}
                 exitStyle={{ opacity: 0, x: -12 }}
                 error={errors.password?.[0] ?? null}
@@ -164,7 +175,15 @@ export default function Page() {
               </FormField>
 
               {error ? (
-                <Paragraph size="$3" color="$red10" animation="quick">
+                <Paragraph
+                  size="$3"
+                  color="$red10"
+                  animation={{
+                    type: "timing",
+                    duration: "500ms",
+                    delay: "200ms",
+                  }}
+                >
                   {error}
                 </Paragraph>
               ) : null}
@@ -174,30 +193,17 @@ export default function Page() {
                 theme="accent"
                 onPress={handleLogin}
                 disabled={loading}
-                animation="bouncy"
+                animation={{
+                  type: "bouncy",
+                  duration: "1000ms",
+                  delay: "200ms",
+                }}
                 enterStyle={{ opacity: 0, y: 18 }}
                 exitStyle={{ opacity: 0, y: -18 }}
                 pressStyle={{ scale: 0.96 }}
               >
                 {loading ? "Signing in..." : "Login"}
               </Button>
-
-              <XStack justify="center" items="center" gap="$2">
-                <Paragraph size="$3" color="$color">
-                  Don't have an account?
-                </Paragraph>
-                <Button
-                  size="$3"
-                  variant="outlined"
-                  onPress={() => console.log("go to signup")}
-                  animation="quick"
-                  enterStyle={{ opacity: 0, y: 10 }}
-                  exitStyle={{ opacity: 0, y: -10 }}
-                  pressStyle={{ scale: 0.95 }}
-                >
-                  Sign Up
-                </Button>
-              </XStack>
             </YStack>
           </YStack>
         </ScrollView>

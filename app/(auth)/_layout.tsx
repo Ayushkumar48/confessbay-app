@@ -14,10 +14,13 @@ export default function TabLayout() {
         screenOptions={{
           headerShown: false,
           tabBarHideOnKeyboard: true,
-          tabBarActiveTintColor: theme.red10.get(),
+          tabBarActiveTintColor: theme.accent5.get(),
           tabBarStyle: {
-            backgroundColor: theme.background.get(),
+            backgroundColor: theme.color2.get(),
             borderTopColor: theme.borderColor.get(),
+          },
+          sceneStyle: {
+            backgroundColor: theme.color4.get(),
           },
           headerStyle: {
             backgroundColor: theme.background.get(),
@@ -36,9 +39,7 @@ export default function TabLayout() {
               <YStack
                 animation="quick"
                 scale={focused ? 1.1 : 1}
-                background={
-                  focused ? theme.accentBackground.get() : "transparent"
-                }
+                background={focused ? theme.color4.get() : "transparent"}
                 rounded="$2"
                 p="$1"
               >
@@ -57,9 +58,7 @@ export default function TabLayout() {
               <YStack
                 animation="quick"
                 scale={focused ? 1.1 : 1}
-                background={
-                  focused ? theme.accentBackground.get() : "transparent"
-                }
+                background={focused ? theme.color4.get() : "transparent"}
                 rounded="$2"
                 p="$1"
               >
