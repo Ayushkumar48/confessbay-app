@@ -65,8 +65,14 @@ const step5Schema = z.object({
 
 const step6Schema = z.object({
   avatar: z
-    .instanceof(File, { error: "Please upload a file." })
+    .object({
+      uri: z.string(),
+      name: z.string(),
+      type: z.string(),
+      size: z.number(),
+    })
     .refine((f) => f.size <= 10_000_000, "Max 10 MB upload size.")
+    .nullable()
     .optional(),
 });
 

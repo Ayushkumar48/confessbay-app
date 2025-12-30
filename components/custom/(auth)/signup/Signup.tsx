@@ -42,7 +42,7 @@ type FormData = {
   gender?: string;
   dateOfBirth?: Date;
   city: string;
-  avatar: MediaValue | null;
+  avatar?: MediaValue | null;
 };
 
 type Errors = Record<string, string[]>;
@@ -217,9 +217,9 @@ const Step5 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
   </YStack>
 ));
 
-const Step6 = React.memo<StepProps>(({ formData, updateFormData }) => (
+const Step6 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
   <YStack gap="$4">
-    <FormField label="Profile Picture (optional)">
+    <FormField label="Profile Picture (optional)" error={errors.avatar?.[0]}>
       <AvatarPicker
         value={formData.avatar}
         onChange={(media) => updateFormData("avatar", media)}
@@ -244,7 +244,7 @@ export default function Signup() {
     gender: undefined,
     dateOfBirth: undefined,
     city: "",
-    avatar: null,
+    avatar: undefined,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -279,7 +279,7 @@ export default function Signup() {
         case 4:
           return { city: formData.city };
         case 5:
-          return { avatar: formData.avatar?.uri || "" };
+          return { avatar: formData.avatar };
         default:
           return {};
       }
