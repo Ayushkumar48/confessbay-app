@@ -1,10 +1,16 @@
-import { forwardRef, memo, ComponentProps } from "react";
+import {
+  forwardRef,
+  memo,
+  ComponentProps,
+  ComponentRef,
+  ComponentPropsWithRef,
+} from "react";
 import { YStack, Input } from "tamagui";
 
 export interface TextInputProps
   extends
     Omit<
-      ComponentProps<typeof Input>,
+      ComponentPropsWithRef<typeof Input>,
       "animation" | "enterStyle" | "exitStyle"
     >,
     Pick<
@@ -12,7 +18,7 @@ export interface TextInputProps
       "animation" | "enterStyle" | "exitStyle"
     > {}
 
-const TextInputInner = forwardRef<any, TextInputProps>(
+const TextInput = forwardRef<ComponentRef<typeof Input>, TextInputProps>(
   ({ animation, enterStyle, exitStyle, ...inputProps }, ref) => {
     return (
       <YStack
@@ -27,8 +33,4 @@ const TextInputInner = forwardRef<any, TextInputProps>(
   },
 );
 
-TextInputInner.displayName = "TextInputInner";
-
-export const TextInput = memo(TextInputInner) as typeof TextInputInner;
-
-export default TextInput;
+export default memo(TextInput);

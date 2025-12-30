@@ -17,6 +17,7 @@ import AnimatedLogo from "@/components/custom/branding/AnimatedLogo";
 import FormField from "@/components/custom/form-fields/form-field";
 import TextInput from "@/components/custom/form-fields/text-input";
 import { Link } from "expo-router";
+import { Header } from "@/components/custom/(auth)/header";
 
 type Errors = {
   username: string[];
@@ -35,24 +36,14 @@ export default function Page() {
 
   const onUsernameChange = useCallback((v: string) => {
     setUsername(v);
-    try {
-      const fieldErrors = validateField(loginSchema, "username", v);
-      setErrors((prev) => ({ ...prev, username: fieldErrors }));
-      setError((prev) => (prev ? null : prev));
-    } catch (e) {
-      setErrors((prev) => ({ ...prev, username: [] }));
-    }
+    setErrors((prev) => ({ ...prev, username: [] }));
+    setError(null);
   }, []);
 
   const onPasswordChange = useCallback((v: string) => {
     setPassword(v);
-    try {
-      const fieldErrors = validateField(loginSchema, "password", v);
-      setErrors((prev) => ({ ...prev, password: fieldErrors }));
-      setError((prev) => (prev ? null : prev));
-    } catch (e) {
-      setErrors((prev) => ({ ...prev, password: [] }));
-    }
+    setErrors((prev) => ({ ...prev, password: [] }));
+    setError(null);
   }, []);
 
   const handleLogin = useCallback(async () => {
@@ -64,8 +55,6 @@ export default function Page() {
         ...(prev as Errors),
         ...(result.errors as Partial<Errors>),
       }));
-      const firstError = Object.values(result.errors).flat()[0];
-      setError(firstError ?? "Please fix the errors and try again");
       return;
     }
 
@@ -98,7 +87,7 @@ export default function Page() {
         enterStyle={{ opacity: 0, scale: 0.96 }}
         exitStyle={{ opacity: 0, scale: 0.96 }}
       >
-        <ScrollView style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }} keyboardShouldPersistTaps="handled">
           <YStack p="$4">
             <YStack
               width="100%"
@@ -109,23 +98,10 @@ export default function Page() {
               exitStyle={{ opacity: 0, y: 14 }}
               gap="$5"
             >
-              <YStack gap="$2" items="center" justify="center">
-                <AnimatedLogo size={64} initials="CB" animated />
-                <H2
-                  color="$color"
-                  animation={{
-                    type: "timing",
-                    duration: "600ms",
-                    delay: "200ms",
-                  }}
-                  enterStyle={{ opacity: 0, y: -6 }}
-                >
-                  Welcome Back
-                </H2>
-                <Paragraph size="$3" color="$color" opacity={0.8}>
-                  Sign in to continue to ConfessBay
-                </Paragraph>
-              </YStack>
+              <Header
+                title="Welcome Back"
+                description="Sign in to continue to ConfessBay"
+              />
 
               <FormField
                 label="Username or Email"
@@ -184,7 +160,10 @@ export default function Page() {
                 </XStack>
               </FormField>
 
-              {error ? (
+              {error &&
+              Object.keys(errors).every(
+                (key) => errors[key as keyof Errors].length === 0,
+              ) ? (
                 <Paragraph
                   size="$3"
                   color="$red10"

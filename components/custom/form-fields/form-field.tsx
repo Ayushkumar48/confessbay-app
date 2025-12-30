@@ -52,7 +52,7 @@ export interface FormFieldProps extends Pick<
  * Notes:
  * - Do not pass animation props directly to child inputs. Instead pass them to this wrapper.
  */
-const FormFieldComponent: React.FC<FormFieldProps> = ({
+const FormField: React.FC<FormFieldProps> = ({
   label,
   id,
   icon,
@@ -128,5 +128,4 @@ const FormFieldComponent: React.FC<FormFieldProps> = ({
   );
 };
 
-export const FormField = memo(FormFieldComponent);
-export default FormField;
+export default memo(FormField);
