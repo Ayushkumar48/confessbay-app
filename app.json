@@ -48,6 +48,12 @@
           "supportsPictureInPicture": true
         }
       ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true
+        }
+      ],
       "expo-router",
       "expo-font",
       [

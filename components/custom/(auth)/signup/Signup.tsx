@@ -25,23 +25,24 @@ import TextInput from "@/components/custom/form-fields/text-input";
 import DateInput from "@/components/custom/form-fields/date-input";
 import MediaSelect from "@/components/custom/form-fields/media-select";
 import { MediaValue } from "@/components/custom/form-fields/types";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Header } from "../header";
 import SelectField from "../../form-fields/select-field";
 import { gender } from "$lib/client/enums";
 import AvatarPicker from "../../form-fields/avatar-picker";
+import { signup } from "$lib/hooks/auth";
 
-type FormData = {
+export type FormData = {
   firstName: string;
   lastName: string;
   username: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   password: string;
   confirmPassword: string;
   gender?: string;
   dateOfBirth?: Date;
-  city: string;
+  city?: string;
   avatar?: MediaValue | null;
 };
 
@@ -232,18 +233,18 @@ const stepComponents = [Step1, Step2, Step3, Step4, Step5, Step6];
 
 export default function Signup() {
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(5);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
     username: "",
     email: "",
-    phoneNumber: "",
+    phoneNumber: undefined,
     password: "",
     confirmPassword: "",
     gender: undefined,
     dateOfBirth: undefined,
-    city: "",
+    city: undefined,
     avatar: undefined,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -313,18 +314,20 @@ export default function Signup() {
   }, []);
 
   const handleSignUp = useCallback(async () => {
-    if (validateCurrentStep()) {
-      setLoading(true);
-      try {
-        // TODO: Implement actual sign up logic
-        console.log("Sign up data:", formData);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      } catch (e) {
-        setError("Sign up failed. Please try again.");
-      } finally {
-        setLoading(false);
-      }
+    if (!validateCurrentStep()) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await signup(formData);
+
+      console.log("Signed up user:", res.user);
+      // router.replace("/(tabs)/feed");
+    } catch (e: any) {
+      setError(e.message ?? "Sign up failed. Please try again.");
+    } finally {
+      setLoading(false);
     }
   }, [formData, validateCurrentStep]);
 
