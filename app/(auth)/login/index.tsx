@@ -11,13 +11,12 @@ import {
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { Eye, EyeOff } from "@tamagui/lucide-icons";
 import { validateForm } from "$lib/client/validate-form";
-import { validateField } from "$lib/client/validate-field";
 import { loginSchema } from "$lib/client/schema";
-import AnimatedLogo from "@/components/custom/branding/AnimatedLogo";
 import FormField from "@/components/custom/form-fields/form-field";
 import TextInput from "@/components/custom/form-fields/text-input";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { Header } from "@/components/custom/(auth)/header";
+import { login } from "$lib/hooks/auth";
 
 type Errors = {
   username: string[];
@@ -63,14 +62,13 @@ export default function Page() {
     setLoading(true);
 
     try {
-      await new Promise((res) => setTimeout(res, 700));
-      if (username === "demo" && password === "demo") {
-        console.log("authentication success - demo user");
-      } else {
-        setError("Invalid username or password");
+      const res = await login(form);
+      if (res.success) {
+        router.replace("/feed");
       }
     } catch (e) {
-      setError("An unexpected error occurred. Try again.");
+      setError(e.message);
+      console.error(e);
     } finally {
       setLoading(false);
     }

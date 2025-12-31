@@ -3,7 +3,7 @@ import { getCookies, saveCookies } from "./cookie-helper";
 export async function apiFetch(url: string, options: RequestInit = {}) {
   const cookies = await getCookies();
 
-  const res = await fetch(url, {
+  const res = await fetch(process.env.EXPO_PUBLIC_API_URL + url, {
     ...options,
     headers: {
       "Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import "../tamagui-web.css";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -11,7 +11,8 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "components/Provider";
-import { useTheme } from "tamagui";
+import { useAuthStore } from "$lib/store/auth";
+import { apiFetch } from "$lib/secure/interceptor";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -22,14 +23,38 @@ export default function RootLayout() {
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
+  const setAuth = useAuthStore((s) => s.setAuth);
+  const clearAuth = useAuthStore((s) => s.clearAuth);
+
+  const [authBooted, setAuthBooted] = useState(false);
 
   useEffect(() => {
-    if (interLoaded || interError) {
+    const bootstrapAuth = async () => {
+      try {
+        const res = await apiFetch("/api/me");
+        if (res.ok) {
+          const { user, session } = await res.json();
+          setAuth(user, session);
+        } else {
+          clearAuth();
+        }
+      } catch {
+        clearAuth();
+      } finally {
+        setAuthBooted(true);
+      }
+    };
+
+    bootstrapAuth();
+  }, []);
+
+  useEffect(() => {
+    if ((interLoaded || interError) && authBooted) {
       SplashScreen.hideAsync();
     }
-  }, [interLoaded, interError]);
+  }, [interLoaded, interError, authBooted]);
 
-  if (!interLoaded && !interError) {
+  if ((!interLoaded && !interError) || !authBooted) {
     return null;
   }
 
@@ -46,7 +71,6 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  const theme = useTheme();
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />

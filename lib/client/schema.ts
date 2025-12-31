@@ -55,7 +55,12 @@ const step3Schema = z
   });
 
 const step4Schema = z.object({
-  gender: z.enum(gender, { error: "Please select you gender" }),
+  gender: z
+    .enum(gender)
+    .optional()
+    .refine((val) => val !== undefined, {
+      message: "Please select your gender",
+    }),
   dateOfBirth: z.date().optional(),
 });
 
@@ -68,7 +73,7 @@ const step6Schema = z.object({
     .object({
       uri: z.string(),
       name: z.string(),
-      type: z.string(),
+      type: z.enum(["images", "videos"]),
       size: z.number(),
     })
     .refine((f) => f.size <= 10_000_000, "Max 10 MB upload size.")
@@ -83,6 +88,14 @@ type Step4Schema = z.infer<typeof step4Schema>;
 type Step5Schema = z.infer<typeof step5Schema>;
 type Step6Schema = z.infer<typeof step6Schema>;
 
+const signupSchema = step1Schema
+  .extend(step2Schema.shape)
+  .extend(step3Schema.shape)
+  .extend(step4Schema.shape)
+  .extend(step5Schema.shape)
+  .extend(step6Schema.shape);
+type SignupForm = z.infer<typeof signupSchema>;
+
 export {
   loginSchema,
   step1Schema,
@@ -91,6 +104,7 @@ export {
   step4Schema,
   step5Schema,
   step6Schema,
+  signupSchema,
 };
 export type {
   LoginSchema,
@@ -100,4 +114,5 @@ export type {
   Step4Schema,
   Step5Schema,
   Step6Schema,
+  SignupForm,
 };

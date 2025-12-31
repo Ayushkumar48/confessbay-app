@@ -13,6 +13,8 @@ import { KeyboardAvoidingView, Platform } from "react-native";
 import { Eye, EyeOff } from "@tamagui/lucide-icons";
 import { validateForm } from "$lib/client/validate-form";
 import {
+  SignupForm,
+  signupSchema,
   step1Schema,
   step2Schema,
   step3Schema,
@@ -23,28 +25,14 @@ import {
 import FormField from "@/components/custom/form-fields/form-field";
 import TextInput from "@/components/custom/form-fields/text-input";
 import DateInput from "@/components/custom/form-fields/date-input";
-import MediaSelect from "@/components/custom/form-fields/media-select";
-import { MediaValue } from "@/components/custom/form-fields/types";
 import { Link, router } from "expo-router";
 import { Header } from "../header";
 import SelectField from "../../form-fields/select-field";
 import { gender } from "$lib/client/enums";
 import AvatarPicker from "../../form-fields/avatar-picker";
 import { signup } from "$lib/hooks/auth";
-
-export type FormData = {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  phoneNumber?: string;
-  password: string;
-  confirmPassword: string;
-  gender?: string;
-  dateOfBirth?: Date;
-  city?: string;
-  avatar?: MediaValue | null;
-};
+import z from "zod";
+import { extractTreeErrors } from "@/components/utils/utils";
 
 type Errors = Record<string, string[]>;
 
@@ -58,8 +46,8 @@ const steps = [
 ];
 
 interface StepProps {
-  formData: FormData;
-  updateFormData: (key: keyof FormData, value: any) => void;
+  formData: SignupForm;
+  updateFormData: (key: keyof SignupForm, value: any) => void;
   errors: Errors;
   showPassword?: boolean;
   setShowPassword?: (show: boolean) => void;
@@ -233,19 +221,14 @@ const stepComponents = [Step1, Step2, Step3, Step4, Step5, Step6];
 
 export default function Signup() {
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<FormData>({
+  const [currentStep, setCurrentStep] = useState(3);
+  const [formData, setFormData] = useState<SignupForm>({
     firstName: "",
     lastName: "",
     username: "",
     email: "",
-    phoneNumber: undefined,
     password: "",
     confirmPassword: "",
-    gender: undefined,
-    dateOfBirth: undefined,
-    city: undefined,
-    avatar: undefined,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -253,11 +236,14 @@ export default function Signup() {
   const [error, setError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Errors>({});
 
-  const updateFormData = useCallback((key: keyof FormData, value: any) => {
-    setFormData((prev) => ({ ...prev, [key]: value }));
-    setErrors({});
-    setError(null);
-  }, []);
+  const updateFormData = useCallback(
+    (key: keyof SignupForm, value: SignupForm[keyof SignupForm]) => {
+      setFormData((prev) => ({ ...prev, [key]: value }));
+      setErrors({});
+      setError(null);
+    },
+    [],
+  );
 
   const getStepData = useMemo(
     () => (step: number) => {
@@ -315,17 +301,21 @@ export default function Signup() {
 
   const handleSignUp = useCallback(async () => {
     if (!validateCurrentStep()) return;
+    const finalCheck = signupSchema.safeParse(formData);
+    if (!finalCheck.success) {
+      const errors = extractTreeErrors(z.treeifyError(finalCheck.error));
+      setErrors(errors);
+      return;
+    }
 
     setLoading(true);
-    setError(null);
-
     try {
-      const res = await signup(formData);
-
-      console.log("Signed up user:", res.user);
-      // router.replace("/(tabs)/feed");
+      const res = await signup(finalCheck.data);
+      if (res.success) {
+        router.replace("/feed");
+      }
     } catch (e: any) {
-      setError(e.message ?? "Sign up failed. Please try again.");
+      setError(e.message ?? "Sign up failed.");
     } finally {
       setLoading(false);
     }

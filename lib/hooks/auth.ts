@@ -1,8 +1,9 @@
+import type { LoginSchema, SignupForm } from "$lib/client/schema";
 import { apiFetch } from "$lib/secure/interceptor";
-import { FormData } from "@/components/custom/(auth)/signup/Signup";
+import { User } from "$lib/store/auth";
 
-export async function signup(formData: FormData) {
-  const res = await apiFetch("http://10.41.81.62:5173/api/signup", {
+async function signup(formData: SignupForm) {
+  const res = await apiFetch("/api/signup", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -17,9 +18,28 @@ export async function signup(formData: FormData) {
 
   return res.json() as Promise<{
     success: boolean;
-    user: {
-      id: string;
-      username: string;
-    };
+    user: User;
   }>;
 }
+
+async function login(formData: LoginSchema) {
+  const res = await apiFetch("/api/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(formData),
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => null);
+    throw new Error(err?.message ?? "An unexpected error occurred. Try again.");
+  }
+
+  return res.json() as Promise<{
+    success: boolean;
+    user: User;
+  }>;
+}
+
+export { signup, login };
