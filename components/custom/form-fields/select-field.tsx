@@ -1,86 +1,88 @@
-import { Select, Adapt, Sheet, YStack } from "tamagui";
-import { ChevronDown, ChevronUp, Check } from "@tamagui/lucide-icons";
+import { ComponentProps } from "react";
+import { StyleSheet } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
+import { YStack, useTheme } from "tamagui";
 
-type SelectFieldProps = {
+export interface SelectFieldProps extends Pick<
+  ComponentProps<typeof YStack>,
+  "animation" | "enterStyle" | "exitStyle"
+> {
   options: readonly string[];
   value?: string;
   onValueChange: (value: string) => void;
   placeholder: string;
-};
+}
 
 function SelectField({
   options,
   value,
   onValueChange,
   placeholder,
+  animation,
+  enterStyle,
+  exitStyle,
 }: SelectFieldProps) {
+  const theme = useTheme();
+
+  const data = options.map((option) => ({
+    label: option,
+    value: option,
+  }));
+
   return (
-    <Select value={value} onValueChange={onValueChange}>
-      <Select.Trigger maxWidth={220} iconAfter={ChevronDown}>
-        <Select.Value placeholder={placeholder} />
-      </Select.Trigger>
-      <Adapt when="maxMd" platform="touch">
-        <Sheet
-          modal
-          dismissOnSnapToBottom
-          animation="medium"
-          snapPointsMode="constant"
-          snapPoints={[200, 190]}
-        >
-          <Sheet.Frame>
-            <Select.Adapt.Contents />
-          </Sheet.Frame>
-
-          <Sheet.Overlay
-            bg="$shadowColor"
-            animation="lazy"
-            enterStyle={{ opacity: 0 }}
-            exitStyle={{ opacity: 0 }}
-          />
-        </Sheet>
-      </Adapt>
-      <Select.Content zIndex={200000}>
-        <Select.ScrollUpButton
-          items="center"
-          justify="center"
-          position="relative"
-          width="100%"
-          height="$3"
-          bg="$background"
-        >
-          <YStack z={10}>
-            <ChevronUp size={20} />
-          </YStack>
-        </Select.ScrollUpButton>
-
-        <Select.Viewport minW={200}>
-          <Select.Group>
-            {options.map((option, index) => (
-              <Select.Item key={option} value={option} index={index} bordered>
-                <Select.ItemText>{option}</Select.ItemText>
-                <Select.ItemIndicator marginLeft="auto">
-                  <Check size={16} />
-                </Select.ItemIndicator>
-              </Select.Item>
-            ))}
-          </Select.Group>
-        </Select.Viewport>
-
-        <Select.ScrollDownButton
-          items="center"
-          justify="center"
-          position="relative"
-          width="100%"
-          height="$3"
-          bg="$background"
-        >
-          <YStack z={10}>
-            <ChevronDown size={20} />
-          </YStack>
-        </Select.ScrollDownButton>
-      </Select.Content>
-    </Select>
+    <YStack
+      width="100%"
+      animation={animation}
+      enterStyle={enterStyle}
+      exitStyle={exitStyle}
+    >
+      <Dropdown
+        data={data}
+        labelField="label"
+        valueField="value"
+        value={value}
+        placeholder={placeholder}
+        onChange={(item) => onValueChange(item.value)}
+        style={[
+          styles.dropdown,
+          {
+            backgroundColor: theme.backgroundPress.get(),
+            borderColor: theme.borderColor.get(),
+          },
+        ]}
+        containerStyle={[
+          styles.container,
+          {
+            backgroundColor: theme.background.get(),
+            borderColor: theme.borderColor.get(),
+          },
+        ]}
+        placeholderStyle={{
+          color: theme.color.get(),
+        }}
+        selectedTextStyle={{
+          color: theme.color.get(),
+        }}
+        itemTextStyle={{
+          color: theme.color.get(),
+        }}
+        activeColor={theme.backgroundPress.get()}
+      />
+    </YStack>
   );
 }
 
 export default SelectField;
+
+const styles = StyleSheet.create({
+  dropdown: {
+    height: 44,
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+  },
+  container: {
+    borderRadius: 10,
+    borderWidth: 1,
+  },
+});

@@ -237,7 +237,7 @@ const stepComponents = [Step1, Step2, Step3, Step4, Step5, Step6];
 export default function Signup() {
   const { fetchProfile } = useAuth();
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(3);
   const [formData, setFormData] = useState<SignupForm>({
     firstName: "",
     lastName: "",

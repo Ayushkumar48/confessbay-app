@@ -5,6 +5,7 @@ import { Home, Compass, User, Send } from "@tamagui/lucide-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TabIcon from "@/components/custom/tab-icon";
 import { useAuth } from "$lib/context/auth";
+import AppHeader from "@/components/custom/navbar/app-header";
 
 export default function TabLayout() {
   const { user } = useAuth();
@@ -30,7 +31,6 @@ export default function TabLayout() {
 
       <Tabs
         screenOptions={{
-          headerShown: false,
           tabBarShowLabel: false,
           tabBarActiveTintColor: theme.accentBackground.get(),
           tabBarInactiveTintColor: theme.gray?.get(),
@@ -45,6 +45,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="feed/index"
           options={{
+            header: () => <AppHeader title="Feed" />,
             title: "Feed",
             tabBarIcon: ({ focused, size }) => (
               <TabIcon
@@ -60,6 +61,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="discover/index"
           options={{
+            header: () => <AppHeader title="Discover" />,
             title: "Discover",
             tabBarIcon: ({ focused, size }) => (
               <TabIcon
@@ -75,6 +77,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="messages/index"
           options={{
+            header: () => <AppHeader title="Messages" />,
             title: "Messages",
             tabBarIcon: ({ focused, size }) => (
               <TabIcon
@@ -90,6 +93,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="profile/index"
           options={{
+            header: () => <AppHeader title="Profile" />,
             title: "Profile",
             tabBarIcon: ({ focused, color, size }) => (
               <TabIcon
