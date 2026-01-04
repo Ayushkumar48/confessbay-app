@@ -46,7 +46,7 @@ export default function RootLayout() {
     };
 
     bootstrapAuth();
-  }, []);
+  }, [clearAuth, setAuth]);
 
   useEffect(() => {
     if ((interLoaded || interError) && authBooted) {

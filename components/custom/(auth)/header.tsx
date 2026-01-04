@@ -1,5 +1,5 @@
 import { H2, Paragraph, YStack } from "tamagui";
-import AnimatedLogo from "../branding/AnimatedLogo";
+import AnimatedLogo from "../branding/animated-logo";
 
 export function Header({
   title,

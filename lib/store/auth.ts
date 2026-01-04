@@ -35,7 +35,7 @@ export type User = {
 type AuthState = {
   user: User | null;
   session: Session | null;
-  setAuth: (user: User, Session: any) => void;
+  setAuth: (user: User, Session: Session) => void;
   clearAuth: () => void;
 };
 

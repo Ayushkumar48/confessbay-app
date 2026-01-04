@@ -3,7 +3,6 @@ import {
   YStack,
   XStack,
   Button,
-  H2,
   Paragraph,
   ScrollView,
   useTheme,
@@ -194,7 +193,7 @@ export default function Page() {
             </YStack>
           </YStack>
           <XStack gap="$1" items="center" justify="center">
-            <Paragraph>Don't have an account yet?</Paragraph>
+            <Paragraph>Don&apos;t have an account yet?</Paragraph>
             <Link
               href="/signup"
               style={{

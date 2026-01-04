@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Select, Adapt, Sheet, YStack } from "tamagui";
 import { ChevronDown, ChevronUp, Check } from "@tamagui/lucide-icons";
 
@@ -84,4 +83,4 @@ function SelectField({
   );
 }
 
-export default memo(SelectField);
+export default SelectField;

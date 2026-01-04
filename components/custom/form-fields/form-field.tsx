@@ -1,4 +1,4 @@
-import React, { memo, useMemo, ComponentProps } from "react";
+import React, { useMemo, ComponentProps } from "react";
 import { YStack, XStack, Paragraph } from "tamagui";
 
 export interface FormFieldProps extends Pick<
@@ -52,7 +52,7 @@ export interface FormFieldProps extends Pick<
  * Notes:
  * - Do not pass animation props directly to child inputs. Instead pass them to this wrapper.
  */
-const FormField: React.FC<FormFieldProps> = ({
+function FormField({
   label,
   id,
   icon,
@@ -63,7 +63,7 @@ const FormField: React.FC<FormFieldProps> = ({
   enterStyle,
   exitStyle,
   gap = "$2",
-}) => {
+}: FormFieldProps) {
   // Memoize the label row — it only changes when label/icon/id change.
   const labelRow = useMemo(() => {
     if (!label && !icon) return null;
@@ -126,6 +126,6 @@ const FormField: React.FC<FormFieldProps> = ({
       {helper}
     </YStack>
   );
-};
+}
 
-export default memo(FormField);
+export default FormField;

@@ -1,13 +1,11 @@
-import React, { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
   YStack,
   XStack,
   Button,
-  H2,
   Paragraph,
   ScrollView,
   useTheme,
-  Select,
 } from "tamagui";
 import { KeyboardAvoidingView, Platform } from "react-native";
 import { Eye, EyeOff } from "@tamagui/lucide-icons";
@@ -31,7 +29,7 @@ import SelectField from "../../form-fields/select-field";
 import { gender } from "$lib/client/enums";
 import AvatarPicker from "../../form-fields/avatar-picker";
 import { signup } from "$lib/hooks/auth";
-import z from "zod";
+import { z } from "zod";
 import { extractTreeErrors } from "@/components/utils/utils";
 
 type Errors = Record<string, string[]>;
@@ -55,76 +53,83 @@ interface StepProps {
   setShowConfirmPassword?: (show: boolean) => void;
 }
 
-const Step1 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
-  <YStack gap="$4">
-    <FormField label="First Name" error={errors.firstName?.[0]}>
-      <TextInput
-        placeholder="John"
-        value={formData.firstName}
-        onChangeText={(v) => updateFormData("firstName", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-    <FormField label="Last Name" error={errors.lastName?.[0]}>
-      <TextInput
-        placeholder="Doe"
-        value={formData.lastName}
-        onChangeText={(v) => updateFormData("lastName", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-  </YStack>
-));
+function Step1({ formData, updateFormData, errors }: StepProps) {
+  return (
+    <YStack gap="$4">
+      <FormField label="First Name" error={errors.firstName?.[0]}>
+        <TextInput
+          placeholder="John"
+          value={formData.firstName}
+          onChangeText={(v) => updateFormData("firstName", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+      <FormField label="Last Name" error={errors.lastName?.[0]}>
+        <TextInput
+          placeholder="Doe"
+          value={formData.lastName}
+          onChangeText={(v) => updateFormData("lastName", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+    </YStack>
+  );
+}
 
-const Step2 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
-  <YStack gap="$4">
-    <FormField label="Username" error={errors.username?.[0]}>
-      <TextInput
-        placeholder="your_username"
-        value={formData.username}
-        onChangeText={(v) => updateFormData("username", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-    <FormField label="Email" error={errors.email?.[0]}>
-      <TextInput
-        placeholder="john@example.com"
-        value={formData.email}
-        onChangeText={(v) => updateFormData("email", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-    <FormField label="Phone Number (optional)" error={errors.phoneNumber?.[0]}>
-      <TextInput
-        placeholder="+1234567890"
-        value={formData.phoneNumber}
-        onChangeText={(v) => updateFormData("phoneNumber", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-  </YStack>
-));
+function Step2({ formData, updateFormData, errors }: StepProps) {
+  return (
+    <YStack gap="$4">
+      <FormField label="Username" error={errors.username?.[0]}>
+        <TextInput
+          placeholder="your_username"
+          value={formData.username}
+          onChangeText={(v) => updateFormData("username", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+      <FormField label="Email" error={errors.email?.[0]}>
+        <TextInput
+          placeholder="john@example.com"
+          value={formData.email}
+          onChangeText={(v) => updateFormData("email", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+      <FormField
+        label="Phone Number (optional)"
+        error={errors.phoneNumber?.[0]}
+      >
+        <TextInput
+          placeholder="+1234567890"
+          value={formData.phoneNumber}
+          onChangeText={(v) => updateFormData("phoneNumber", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+    </YStack>
+  );
+}
 
-const Step3 = React.memo<StepProps>(
-  ({
-    formData,
-    updateFormData,
-    errors,
-    showPassword,
-    setShowPassword,
-    showConfirmPassword,
-    setShowConfirmPassword,
-  }) => (
+function Step3({
+  formData,
+  updateFormData,
+  errors,
+  showPassword,
+  setShowPassword,
+  showConfirmPassword,
+  setShowConfirmPassword,
+}: StepProps) {
+  return (
     <YStack gap="$4">
       <FormField label="Password" error={errors.password?.[0]}>
         <XStack items="center" gap="$2" width="100%">
@@ -169,53 +174,62 @@ const Step3 = React.memo<StepProps>(
         </XStack>
       </FormField>
     </YStack>
-  ),
-);
+  );
+}
 
-const Step4 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
-  <YStack gap="$4">
-    <FormField label="Gender" error={errors.gender?.[0]}>
-      <SelectField
-        value={formData.gender}
-        onValueChange={(v) => updateFormData("gender", v)}
-        options={gender}
-        placeholder="Select gender"
-      />
-    </FormField>
-    <FormField label="Date of Birth (optional)" error={errors.dateOfBirth?.[0]}>
-      <DateInput
-        value={formData.dateOfBirth}
-        onChange={(date) => updateFormData("dateOfBirth", date)}
-      />
-    </FormField>
-  </YStack>
-));
+function Step4({ formData, updateFormData, errors }: StepProps) {
+  return (
+    <YStack gap="$4">
+      <FormField label="Gender" error={errors.gender?.[0]}>
+        <SelectField
+          value={formData.gender}
+          onValueChange={(v) => updateFormData("gender", v)}
+          options={gender}
+          placeholder="Select gender"
+        />
+      </FormField>
+      <FormField
+        label="Date of Birth (optional)"
+        error={errors.dateOfBirth?.[0]}
+      >
+        <DateInput
+          value={formData.dateOfBirth}
+          onChange={(date) => updateFormData("dateOfBirth", date)}
+        />
+      </FormField>
+    </YStack>
+  );
+}
 
-const Step5 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
-  <YStack gap="$4">
-    <FormField label="Current City (optional)" error={errors.city?.[0]}>
-      <TextInput
-        placeholder="Mumbai"
-        value={formData.city}
-        onChangeText={(v) => updateFormData("city", v)}
-        size="$4"
-        rounded="$3"
-        bg="$background"
-      />
-    </FormField>
-  </YStack>
-));
+function Step5({ formData, updateFormData, errors }: StepProps) {
+  return (
+    <YStack gap="$4">
+      <FormField label="Current City (optional)" error={errors.city?.[0]}>
+        <TextInput
+          placeholder="Mumbai"
+          value={formData.city}
+          onChangeText={(v) => updateFormData("city", v)}
+          size="$4"
+          rounded="$3"
+          bg="$background"
+        />
+      </FormField>
+    </YStack>
+  );
+}
 
-const Step6 = React.memo<StepProps>(({ formData, updateFormData, errors }) => (
-  <YStack gap="$4">
-    <FormField label="Profile Picture (optional)" error={errors.avatar?.[0]}>
-      <AvatarPicker
-        value={formData.avatar}
-        onChange={(media) => updateFormData("avatar", media)}
-      />
-    </FormField>
-  </YStack>
-));
+function Step6({ formData, updateFormData, errors }: StepProps) {
+  return (
+    <YStack gap="$4">
+      <FormField label="Profile Picture (optional)" error={errors.avatar?.[0]}>
+        <AvatarPicker
+          value={formData.avatar}
+          onChange={(media) => updateFormData("avatar", media)}
+        />
+      </FormField>
+    </YStack>
+  );
+}
 
 const stepComponents = [Step1, Step2, Step3, Step4, Step5, Step6];
 

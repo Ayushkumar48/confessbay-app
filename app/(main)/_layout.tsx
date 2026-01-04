@@ -1,14 +1,8 @@
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { GetThemeValueForKey, useTheme } from "tamagui";
+import { useTheme } from "tamagui";
 import { useAuthStore } from "$lib/store/auth";
-import {
-  Home,
-  Compass,
-  MessageCircle,
-  User,
-  Send,
-} from "@tamagui/lucide-icons";
+import { Home, Compass, User, Send } from "@tamagui/lucide-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TabIcon from "@/components/custom/tab-icon";
 

@@ -1,6 +1,5 @@
 import { Home } from "@tamagui/lucide-icons";
 import { memo } from "react";
-import { GetThemeValueForKey } from "tamagui";
 
 function TabIcon({
   focused,

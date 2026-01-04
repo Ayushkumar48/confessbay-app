@@ -11,7 +11,7 @@ interface AvatarPickerProps {
   size?: number;
 }
 
-const AvatarPicker = ({ value, onChange, size = 96 }: AvatarPickerProps) => {
+function AvatarPicker({ value, onChange, size = 96 }: AvatarPickerProps) {
   const pickAvatar = useCallback(async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -102,6 +102,6 @@ const AvatarPicker = ({ value, onChange, size = 96 }: AvatarPickerProps) => {
       )}
     </YStack>
   );
-};
+}
 
 export default memo(AvatarPicker);

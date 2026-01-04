@@ -75,8 +75,8 @@ export default function NotFoundScreen() {
               enterStyle={{ opacity: 0, y: 10 }}
               text="center"
             >
-              Looks like you've ventured into the unknown! 🌌 The page you're
-              looking for doesn't exist.
+              Looks like you&apos;ve ventured into the unknown! 🌌 The page
+              you&apos;re looking for doesn&apos;t exist.
             </Text>
 
             <Link href="/" asChild>

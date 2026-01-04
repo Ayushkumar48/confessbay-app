@@ -1,9 +1,7 @@
 import React, {
-  forwardRef,
-  memo,
   ComponentProps,
-  ComponentRef,
   ComponentPropsWithRef,
+  memo,
   useCallback,
 } from "react";
 import { Alert, Pressable } from "react-native";
@@ -31,107 +29,102 @@ export interface MediaSelectProps
   allow?: ["images"] | ["videos"] | ["images", "videos"];
 }
 
-const MediaSelect = forwardRef<ComponentRef<typeof Button>, MediaSelectProps>(
-  (
-    {
-      value,
-      onChange,
-      placeholder = "Select media",
-      children,
-      allow = ["images", "videos"],
-      animation,
-      enterStyle,
-      exitStyle,
-      ...buttonProps
-    },
-    ref,
-  ) => {
-    const player = useVideoPlayer(
-      value?.type === "videos" ? { uri: value.uri } : {},
-    );
-    const pickMedia = useCallback(async () => {
-      const permissionResult =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+function MediaSelect({
+  value,
+  onChange,
+  placeholder = "Select media",
+  children,
+  allow = ["images", "videos"],
+  animation,
+  enterStyle,
+  exitStyle,
+  ...buttonProps
+}: MediaSelectProps) {
+  const player = useVideoPlayer(
+    value?.type === "videos" ? { uri: value.uri } : {},
+  );
+  const pickMedia = useCallback(async () => {
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-      if (!permissionResult.granted) {
-        Alert.alert(
-          "Permission required",
-          "Permission to access the media library is required.",
-        );
-        return;
-      }
-      const mediaTypes = allow as ("images" | "videos")[];
-      const res = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
+    if (!permissionResult.granted) {
+      Alert.alert(
+        "Permission required",
+        "Permission to access the media library is required.",
+      );
+      return;
+    }
+    const mediaTypes = allow as ("images" | "videos")[];
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!res.canceled) {
+      const asset = res.assets[0];
+      onChange?.({
+        uri: asset.uri,
+        type: "images",
+        name: asset.fileName,
+        size: asset.fileSize,
       });
+    }
+  }, [onChange, allow]);
 
-      if (!res.canceled) {
-        const asset = res.assets[0];
-        onChange?.({
-          uri: asset.uri,
-          type: "images",
-          name: asset.fileName,
-          size: asset.fileSize,
-        });
-      }
-    }, [onChange]);
+  return (
+    <YStack
+      width="100%"
+      gap="$3"
+      animation={animation}
+      enterStyle={enterStyle}
+      exitStyle={exitStyle}
+    >
+      {children ? (
+        <Button onPress={pickMedia} {...buttonProps}>
+          {children}
+        </Button>
+      ) : (
+        <Button onPress={pickMedia} {...buttonProps}>
+          {value ? "Select another" : placeholder}
+        </Button>
+      )}
 
-    return (
-      <YStack
-        width="100%"
-        gap="$3"
-        animation={animation}
-        enterStyle={enterStyle}
-        exitStyle={exitStyle}
-      >
-        {children ? (
-          <Button onPress={pickMedia} {...buttonProps}>
-            {children}
-          </Button>
-        ) : (
-          <Button onPress={pickMedia} {...buttonProps}>
-            {value ? "Select another" : placeholder}
-          </Button>
-        )}
-
-        {value && (
-          <Stack position="relative">
-            {value.type === "images" && (
-              <Image
-                source={{ uri: value.uri }}
-                width={120}
-                height={120}
-                borderRadius="$4"
-              />
-            )}
-            {value.type === "videos" && (
-              <VideoView
-                player={player}
-                style={{ width: 200, height: 120 }}
-                allowsFullscreen
-              />
-            )}
-            <Pressable
-              style={{
-                position: "absolute",
-                bottom: 8,
-                right: 8,
-                padding: 4,
-                backgroundColor: "rgba(0,0,0,0.5)",
-                borderRadius: 4,
-              }}
-              onPress={() => onChange?.(null)}
-            >
-              <X size={16} color="white" />
-            </Pressable>
-          </Stack>
-        )}
-      </YStack>
-    );
-  },
-);
+      {value && (
+        <Stack position="relative">
+          {value.type === "images" && (
+            <Image
+              source={{ uri: value.uri }}
+              width={120}
+              height={120}
+              borderRadius="$4"
+            />
+          )}
+          {value.type === "videos" && (
+            <VideoView
+              player={player}
+              style={{ width: 200, height: 120 }}
+              allowsFullscreen
+            />
+          )}
+          <Pressable
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 8,
+              padding: 4,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              borderRadius: 4,
+            }}
+            onPress={() => onChange?.(null)}
+          >
+            <X size={16} color="white" />
+          </Pressable>
+        </Stack>
+      )}
+    </YStack>
+  );
+}
 
 export default memo(MediaSelect);

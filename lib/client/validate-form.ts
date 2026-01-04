@@ -1,4 +1,4 @@
-import type z from "zod";
+import { z } from "zod";
 import { mapZodErrors } from "./validation";
 
 export function resetErrors<T extends Record<string, unknown>>(

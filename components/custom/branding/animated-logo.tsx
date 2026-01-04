@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from "react";
+import { memo, useMemo } from "react";
 import { YStack, Square, H2 } from "tamagui";
 
 export interface AnimatedLogoProps {
@@ -7,11 +7,11 @@ export interface AnimatedLogoProps {
   animated?: boolean;
 }
 
-const AnimatedLogoComponent: React.FC<AnimatedLogoProps> = ({
+function AnimatedLogo({
   size = 56,
   initials = "CB",
   animated = true,
-}) => {
+}: AnimatedLogoProps) {
   const animation = useMemo(
     () => (animated ? "bouncy" : undefined),
     [animated],
@@ -54,9 +54,6 @@ const AnimatedLogoComponent: React.FC<AnimatedLogoProps> = ({
       </Square>
     </YStack>
   );
-};
+}
 
-AnimatedLogoComponent.displayName = "AnimatedLogo";
-
-export const AnimatedLogo = memo(AnimatedLogoComponent);
-export default AnimatedLogo;
+export default memo(AnimatedLogo);
