@@ -46,13 +46,12 @@ export default function TabLayout() {
           name="feed/index"
           options={{
             title: "Feed",
-            tabBarIcon: ({ focused, color, size }) => (
+            tabBarIcon: ({ focused, size }) => (
               <TabIcon
                 focused={focused}
                 Icon={Home}
-                color={color}
                 size={size}
-                activeColor={theme.accentBackground.get()}
+                activeColor="$accentBackground"
               />
             ),
           }}
@@ -62,13 +61,12 @@ export default function TabLayout() {
           name="discover/index"
           options={{
             title: "Discover",
-            tabBarIcon: ({ focused, color, size }) => (
+            tabBarIcon: ({ focused, size }) => (
               <TabIcon
                 focused={focused}
                 Icon={Compass}
-                color={color}
                 size={size}
-                activeColor={theme.accentBackground.get()}
+                activeColor="$accentBackground"
               />
             ),
           }}
@@ -78,13 +76,12 @@ export default function TabLayout() {
           name="messages/index"
           options={{
             title: "Messages",
-            tabBarIcon: ({ focused, color, size }) => (
+            tabBarIcon: ({ focused, size }) => (
               <TabIcon
                 focused={focused}
                 Icon={Send}
-                color={color}
                 size={size}
-                activeColor={theme.accentBackground.get()}
+                activeColor="$accentBackground"
               />
             ),
           }}
@@ -98,9 +95,8 @@ export default function TabLayout() {
               <TabIcon
                 focused={focused}
                 Icon={User}
-                color={color}
                 size={size}
-                activeColor={theme.accentBackground.get()}
+                activeColor="$accentBackground"
               />
             ),
           }}
