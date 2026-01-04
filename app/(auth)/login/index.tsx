@@ -16,6 +16,7 @@ import TextInput from "@/components/custom/form-fields/text-input";
 import { Link, router } from "expo-router";
 import { Header } from "@/components/custom/(auth)/header";
 import { login } from "$lib/hooks/auth";
+import { useAuth } from "$lib/context/auth";
 
 type Errors = {
   username: string[];
@@ -23,6 +24,7 @@ type Errors = {
 };
 
 export default function Page() {
+  const { fetchProfile } = useAuth();
   const theme = useTheme();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -61,17 +63,16 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const res = await login(form);
-      if (res.success) {
-        router.replace("/feed");
-      }
+      await login(form);
+      await fetchProfile();
+      router.replace("/feed");
     } catch (e) {
       setError(e.message);
       console.error(e);
     } finally {
       setLoading(false);
     }
-  }, [username, password]);
+  }, [username, password, fetchProfile]);
 
   return (
     <KeyboardAvoidingView

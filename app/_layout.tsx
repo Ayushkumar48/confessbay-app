@@ -1,6 +1,5 @@
 import "../tamagui-web.css";
 
-import { useEffect, useState } from "react";
 import { useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -11,8 +10,8 @@ import {
 import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "components/Provider";
-import { useAuthStore } from "$lib/store/auth";
-import { apiFetch } from "$lib/secure/interceptor";
+import { ClientShell, useAuth } from "$lib/context/auth";
+import { useEffect, useState } from "react";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -23,46 +22,42 @@ export default function RootLayout() {
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
     InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
-  const setAuth = useAuthStore((s) => s.setAuth);
-  const clearAuth = useAuthStore((s) => s.clearAuth);
 
-  const [authBooted, setAuthBooted] = useState(false);
+  if (!interLoaded && !interError) {
+    return null;
+  }
+  return (
+    <Providers>
+      <ClientShell>
+        <AuthBootstrap>
+          <RootLayoutNav />
+        </AuthBootstrap>
+      </ClientShell>
+    </Providers>
+  );
+}
 
-  useEffect(() => {
-    const bootstrapAuth = async () => {
-      try {
-        const res = await apiFetch("/api/me");
-        if (res.ok) {
-          const { user, session } = await res.json();
-          setAuth(user, session);
-        } else {
-          clearAuth();
-        }
-      } catch {
-        clearAuth();
-      } finally {
-        setAuthBooted(true);
-      }
-    };
-
-    bootstrapAuth();
-  }, [clearAuth, setAuth]);
+function AuthBootstrap({ children }: { children: React.ReactNode }) {
+  const { fetchProfile } = useAuth();
+  const [booted, setBooted] = useState(false);
 
   useEffect(() => {
-    if ((interLoaded || interError) && authBooted) {
+    fetchProfile().finally(() => {
+      setBooted(true);
+    });
+  }, [fetchProfile]);
+
+  useEffect(() => {
+    if (booted) {
       SplashScreen.hideAsync();
     }
-  }, [interLoaded, interError, authBooted]);
+  }, [booted]);
 
-  if ((!interLoaded && !interError) || !authBooted) {
+  if (!booted) {
     return null;
   }
 
-  return (
-    <Providers>
-      <RootLayoutNav />
-    </Providers>
-  );
+  return <>{children}</>;
 }
 
 const Providers = ({ children }: { children: React.ReactNode }) => {

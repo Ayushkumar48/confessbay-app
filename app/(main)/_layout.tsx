@@ -1,13 +1,13 @@
 import { Redirect, Tabs } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "tamagui";
-import { useAuthStore } from "$lib/store/auth";
 import { Home, Compass, User, Send } from "@tamagui/lucide-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TabIcon from "@/components/custom/tab-icon";
+import { useAuth } from "$lib/context/auth";
 
 export default function TabLayout() {
-  const user = useAuthStore((s) => s.user);
+  const { user } = useAuth();
   const theme = useTheme();
 
   if (!user) {

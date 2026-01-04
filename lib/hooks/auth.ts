@@ -1,6 +1,5 @@
 import type { LoginSchema, SignupForm } from "$lib/client/schema";
 import { apiFetch } from "$lib/secure/interceptor";
-import { User } from "$lib/store/auth";
 
 async function signup(formData: SignupForm) {
   const res = await apiFetch("/api/signup", {
@@ -16,10 +15,7 @@ async function signup(formData: SignupForm) {
     throw new Error(err?.message ?? "Signup failed");
   }
 
-  return res.json() as Promise<{
-    success: boolean;
-    user: User;
-  }>;
+  return res.json();
 }
 
 async function login(formData: LoginSchema) {
@@ -36,10 +32,7 @@ async function login(formData: LoginSchema) {
     throw new Error(err?.message ?? "An unexpected error occurred. Try again.");
   }
 
-  return res.json() as Promise<{
-    success: boolean;
-    user: User;
-  }>;
+  return res.json();
 }
 
 export { signup, login };

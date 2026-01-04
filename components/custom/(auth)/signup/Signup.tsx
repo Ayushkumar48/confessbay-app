@@ -31,6 +31,7 @@ import AvatarPicker from "../../form-fields/avatar-picker";
 import { signup } from "$lib/hooks/auth";
 import { z } from "zod";
 import { extractTreeErrors } from "@/components/utils/utils";
+import { useAuth } from "$lib/context/auth";
 
 type Errors = Record<string, string[]>;
 
@@ -234,8 +235,9 @@ function Step6({ formData, updateFormData, errors }: StepProps) {
 const stepComponents = [Step1, Step2, Step3, Step4, Step5, Step6];
 
 export default function Signup() {
+  const { fetchProfile } = useAuth();
   const theme = useTheme();
-  const [currentStep, setCurrentStep] = useState(3);
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<SignupForm>({
     firstName: "",
     lastName: "",
@@ -324,16 +326,15 @@ export default function Signup() {
 
     setLoading(true);
     try {
-      const res = await signup(finalCheck.data);
-      if (res.success) {
-        router.replace("/feed");
-      }
+      await signup(finalCheck.data);
+      await fetchProfile();
+      router.replace("/feed");
     } catch (e: any) {
       setError(e.message ?? "Sign up failed.");
     } finally {
       setLoading(false);
     }
-  }, [formData, validateCurrentStep]);
+  }, [formData, validateCurrentStep, fetchProfile]);
 
   const currentStepComponent = useMemo(() => {
     const StepComponent = stepComponents[currentStep];
