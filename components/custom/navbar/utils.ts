@@ -13,6 +13,15 @@ import {
   Users,
 } from "@tamagui/lucide-icons";
 import { Href } from "expo-router";
+import Notifications from "@/app/(main)/notifications";
+import DiscoverPeople from "@/app/(main)/discover/people";
+import ProfileSettings from "@/app/(main)/profile/settings";
+import FeedNew from "@/app/(main)/feed/new";
+import MessagesNewPerson from "@/app/(main)/messages/new-person";
+import Discover from "@/app/(main)/discover";
+import Feed from "@/app/(main)/feed";
+import Profile from "@/app/(main)/profile";
+import Messages from "@/app/(main)/messages";
 
 export type HeaderItem = {
   label: string;
@@ -29,6 +38,7 @@ export type HeaderItem = {
     href?: Href;
   };
   onPress: () => void;
+  component: React.ComponentType;
 };
 export const headerItems: HeaderItem[] = [
   {
@@ -38,6 +48,7 @@ export const headerItems: HeaderItem[] = [
     headerLeft: { icon: Plus, type: "navigate", href: "/feed/new" },
     headerRight: { icon: Bell, type: "navigate", href: "/notifications" },
     onPress: () => console.log("Home pressed"),
+    component: Feed,
   },
   {
     label: "Discover",
@@ -46,6 +57,7 @@ export const headerItems: HeaderItem[] = [
     headerLeft: { icon: Funnel },
     headerRight: { icon: Users, type: "navigate", href: "/discover/people" },
     onPress: () => console.log("Discover pressed"),
+    component: Discover,
   },
   {
     label: "Messages",
@@ -58,6 +70,7 @@ export const headerItems: HeaderItem[] = [
       href: "/messages/new-person",
     },
     onPress: () => console.log("Messages pressed"),
+    component: Messages,
   },
   {
     label: "Profile",
@@ -66,13 +79,29 @@ export const headerItems: HeaderItem[] = [
     headerLeft: { icon: Plus, type: "navigate", href: "/feed/new" },
     headerRight: { icon: Menu, type: "navigate", href: "/profile/settings" },
     onPress: () => console.log("Profile pressed"),
+    component: Profile,
   },
 ];
 
 export const hiddenItems = [
-  "notifications/index",
-  "discover/people/index",
-  "profile/settings/index",
-  "feed/new/index",
-  "messages/new-person/index",
+  {
+    pagename: "notifications/index",
+    component: Notifications,
+  },
+  {
+    pagename: "discover/people/index",
+    component: DiscoverPeople,
+  },
+  {
+    pagename: "profile/settings/index",
+    component: ProfileSettings,
+  },
+  {
+    pagename: "feed/new/index",
+    component: FeedNew,
+  },
+  {
+    pagename: "messages/new-person/index",
+    component: MessagesNewPerson,
+  },
 ];

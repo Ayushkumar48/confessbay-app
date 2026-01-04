@@ -5,117 +5,336 @@ import {
   ScrollView,
   YStack,
   XStack,
-  Theme,
+  Separator,
 } from "tamagui";
 import {
   Heart,
   MapPin,
   GraduationCap,
   Calendar,
+  Lock,
+  Edit3,
+  LogOut,
+  User,
+  Grid,
   Shield,
-  EyeOff,
+  Share,
 } from "@tamagui/lucide-icons";
 import { useAuth } from "$lib/context/auth";
-import { Redirect } from "expo-router";
+import { formatDate } from "@/components/utils/utils";
+import AppHeader from "@/components/custom/navbar/app-header";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
 
-  if (!user) {
-    return <Redirect href="/login" />;
-  }
+  if (!user) return null;
 
   return (
-    <Theme name="dark">
-      <ScrollView flex={1} bg="$background">
-        <YStack p="$4" gap="$4">
-          <YStack items="center" gap="$2">
-            <Avatar size="$10" circular>
+    <ScrollView flex={1} bg="$background">
+      <AppHeader justify="center" />
+      <YStack gap="$4" px="$2">
+        <XStack pt="$4" justify="space-between">
+          <XStack gap="$4" items="center">
+            <Avatar size="$10" circular borderWidth={2} borderColor="purple">
               <Avatar.Image src={user.avatar} />
-              <Avatar.Fallback bg="gray" />
+              <Avatar.Fallback bg="purple">
+                <User size={40} color="white" />
+              </Avatar.Fallback>
             </Avatar>
-            <Text fontSize="$8" fontWeight="bold" color="$color">
-              {user.firstName} {user.lastName || ""}{" "}
-              {user.anonymous ? "👤" : ""}
-            </Text>
-            <Text fontSize="$5" color="lightslategray">
+          </XStack>
+
+          <YStack gap="$2">
+            <XStack items="center" gap="$2">
+              <Text fontSize="$5" fontWeight="700" color="$color">
+                {user.firstName} {user.lastName || ""}
+              </Text>
+              {user.anonymous && <Lock size={16} color="gray" />}
+            </XStack>
+
+            <Text fontSize="$3" color="gray" fontWeight="500">
               @{user.username}
             </Text>
+
             {user.bio && (
-              <Text fontSize="$4" text="center" color="$color">
-                {user.bio} 💬
+              <Text fontSize="$4" color="$color" lineHeight="$4">
+                {user.bio}
               </Text>
             )}
+
+            <XStack gap="$2" flexWrap="wrap" mt="$1">
+              {user.city && (
+                <XStack
+                  bg="lightgray"
+                  px="$2.5"
+                  py="$1.5"
+                  rounded="$2"
+                  items="center"
+                  gap="$1.5"
+                >
+                  <MapPin size={12} color="black" />
+                  <Text fontSize="$2" color="black" fontWeight="500">
+                    {user.city}
+                  </Text>
+                </XStack>
+              )}
+
+              {user.collegeId && (
+                <XStack
+                  bg="lightgray"
+                  px="$2.5"
+                  py="$1.5"
+                  rounded="$2"
+                  items="center"
+                  gap="$1.5"
+                >
+                  <GraduationCap size={12} color="black" />
+                  <Text fontSize="$2" color="black" fontWeight="500">
+                    Student
+                  </Text>
+                </XStack>
+              )}
+
+              {user.dateOfBirth && (
+                <XStack
+                  bg="lightgray"
+                  px="$2.5"
+                  py="$1.5"
+                  rounded="$2"
+                  items="center"
+                  gap="$1.5"
+                >
+                  <Calendar size={12} color="black" />
+                  <Text fontSize="$2" color="black" fontWeight="500">
+                    {formatDate(user.dateOfBirth, "short")}
+                  </Text>
+                </XStack>
+              )}
+            </XStack>
+          </YStack>
+        </XStack>
+        <XStack gap="$2">
+          <Button
+            width="48%"
+            size="$3"
+            bg="$accentBackground"
+            color="white"
+            fontWeight="700"
+            iconAfter={<Edit3 size={16} />}
+          >
+            Edit Profile
+          </Button>
+
+          <Button
+            width="48%"
+            size="$3"
+            bg="lightgray"
+            color="$color"
+            fontWeight="700"
+            iconAfter={<Share size={16} />}
+          >
+            Share Profile
+          </Button>
+        </XStack>
+        <XStack justify="space-around">
+          <YStack items="center" gap="$0.25">
+            <Text fontSize="$5" fontWeight="800" color="$color">
+              {user.totalConfessions}
+            </Text>
+            <Text fontSize="$1" color="gray" fontWeight="500">
+              Confessions
+            </Text>
           </YStack>
 
-          <XStack justify="space-around" p="$2" bg="gray" rounded="$4">
-            <YStack items="center">
-              <Heart size={24} color="$red10" />
-              <Text fontSize="$6" fontWeight="bold" color="$color">
-                {user.totalConfessions}
+          <YStack items="center" gap="$0.25">
+            <Text fontSize="$5" fontWeight="800" color="$color">
+              0
+            </Text>
+            <Text fontSize="$1" color="gray" fontWeight="500">
+              Followers
+            </Text>
+          </YStack>
+
+          <YStack items="center" gap="$0.25">
+            <Text fontSize="$5" fontWeight="800" color="$color">
+              0
+            </Text>
+            <Text fontSize="$1" color="gray" fontWeight="500">
+              Following
+            </Text>
+          </YStack>
+        </XStack>
+        <Separator />
+
+        <YStack px="$4" gap="$3">
+          <Text fontSize="$5" fontWeight="700" color="$color">
+            About
+          </Text>
+          <YStack gap="$3">
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Gender
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {user.gender || "—"}
               </Text>
-              <Text fontSize="$3" color="lightslategray">
-                Confessions ❤️
+            </XStack>
+
+            <Separator />
+
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Zodiac
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {user.zodiacSign || "—"}
               </Text>
-            </YStack>
-            <YStack items="center">
-              <EyeOff size={24} color="blue" />
-              <Text fontSize="$6" fontWeight="bold" color="$color">
-                {user.anonymous ? "Yes" : "No"}
+            </XStack>
+
+            <Separator />
+
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Open to relationships
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {user.openToRelationships ? "Yes" : "No"}
               </Text>
-              <Text fontSize="$3" color="lightslategray">
-                Anonymous 🔒
+            </XStack>
+
+            <Separator />
+
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Phone
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {user.phoneNumber}
+              </Text>
+            </XStack>
+          </YStack>
+        </YStack>
+
+        <Separator />
+
+        <YStack px="$4" gap="$3">
+          <Text fontSize="$5" fontWeight="700" color="$color">
+            Account
+          </Text>
+
+          <YStack gap="$3">
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Joined
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {formatDate(user.createdAt, "short")}
+              </Text>
+            </XStack>
+
+            <Separator />
+
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Email
+                </Text>
+              </XStack>
+              <XStack items="center" gap="$2">
+                {user.emailVerified && (
+                  <Shield size={14} color="$green10" fill="$green10" />
+                )}
+                <Text fontSize="$4" color="$color" fontWeight="600">
+                  {user.email}
+                </Text>
+              </XStack>
+            </XStack>
+
+            <Separator />
+
+            <XStack justify="space-between" py="$2.5">
+              <XStack items="center" gap="$2" flex={1}>
+                <Text fontSize="$3" color="gray" fontWeight="500">
+                  Location
+                </Text>
+              </XStack>
+              <Text fontSize="$4" color="$color" fontWeight="600">
+                {user.city || "Not specified"}
+              </Text>
+            </XStack>
+          </YStack>
+        </YStack>
+
+        <Separator />
+
+        <YStack px="$4" gap="$3">
+          <XStack gap="$4" justify="space-around" py="$2">
+            <YStack
+              items="center"
+              gap="$2"
+              flex={1}
+              pressStyle={{ opacity: 0.7 }}
+            >
+              <Grid size={24} color="purple" />
+              <Text fontSize="$2" color="purple" fontWeight="600">
+                Recent Confessions
               </Text>
             </YStack>
           </XStack>
 
-          <YStack gap="$3" p="$4" bg="gray" rounded="$6">
-            <XStack items="center" gap="$2">
-              <GraduationCap size={20} color="$green10" />
-              <Text fontSize="$4" color="$color">
-                College: {user.collegeId ? "Your College" : "Not specified"} 🎓
-              </Text>
-            </XStack>
-            <XStack items="center" gap="$2">
-              <MapPin size={20} color="orange" />
-              <Text fontSize="$4" color="$color">
-                City: {user.city || "Not specified"} 📍
-              </Text>
-            </XStack>
-            <XStack items="center" gap="$2">
-              <Calendar size={20} color="purple" />
-              <Text fontSize="$4" color="$color">
-                DOB: {user.dateOfBirth ? user.dateOfBirth : "Not specified"} 🎂
-              </Text>
-            </XStack>
-            <XStack items="center" gap="$2">
-              <Shield size={20} color="$yellow10" />
-              <Text fontSize="$4" color="$color">
-                Zodiac: {user.zodiacSign || "Not specified"} ♈
-              </Text>
-            </XStack>
-            <Text fontSize="$4" color="$color">
-              Open to Relationships:{" "}
-              {user.openToRelationships ? "Yes 💕" : "No 🚫"}
+          <YStack items="center" justify="center" py="$8" gap="$3">
+            <YStack
+              bg="gray"
+              p="$4"
+              rounded="$12"
+              items="center"
+              justify="center"
+              width={80}
+              height={80}
+            >
+              <Heart size={40} color="gray" strokeWidth={1.5} />
+            </YStack>
+            <Text
+              fontSize="$5"
+              fontWeight="700"
+              color="$color"
+              verticalAlign="center"
+            >
+              My Recent Confessions
             </Text>
-            <Text fontSize="$4" color="$color">
-              Email Verified: {user.emailVerified ? "Yes ✅" : "No ❌"}
+            <Text fontSize="$3" color="gray" verticalAlign="center" maxW={280}>
+              No confessions yet. Start sharing!
             </Text>
-            <Text fontSize="$4" color="$color">
-              Phone Verified: {user.phoneVerified ? "Yes 📱" : "No ❌"}
-            </Text>
-          </YStack>
-
-          <YStack gap="$2">
-            <Button theme="success" onPress={() => {}}>
-              Edit Profile ✏️
-            </Button>
-            <Button theme="error" onPress={logout}>
-              Logout 🚪
-            </Button>
           </YStack>
         </YStack>
-      </ScrollView>
-    </Theme>
+
+        <YStack px="$4" pb="$6" pt="$2">
+          <Button
+            size="$4"
+            bg="transparent"
+            borderWidth={1}
+            borderColor="$red10"
+            color="$red10"
+            fontWeight="700"
+            pressStyle={{ bg: "$red2" }}
+            iconAfter={<LogOut size={18} />}
+            onPress={logout}
+          >
+            Logout
+          </Button>
+        </YStack>
+
+        <YStack height="$4" />
+      </YStack>
+    </ScrollView>
   );
 }

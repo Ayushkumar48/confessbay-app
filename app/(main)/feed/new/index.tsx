@@ -1,7 +1,9 @@
+import { Text, View } from "tamagui";
+
 export default function Page() {
   return (
-    <div>
-      <h1>New Feed Page</h1>
-    </div>
+    <View>
+      <Text>People Page</Text>
+    </View>
   );
 }

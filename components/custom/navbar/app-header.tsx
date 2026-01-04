@@ -1,32 +1,35 @@
-import { Text, XStack } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import ActionButton from "./action-button";
-import { HeaderItem } from "./utils";
+import { ComponentProps } from "react";
+import { XStack, Text } from "tamagui";
+
+type AppHeaderProps = {
+  leftChildren?: React.ReactNode;
+  rightChildren?: React.ReactNode;
+} & ComponentProps<typeof XStack>;
 
 export default function AppHeader({
-  pagename,
-  label,
-  headerLeft,
-  headerRight,
-  onPress,
-  icon,
-}: HeaderItem) {
+  leftChildren,
+  rightChildren,
+  bg = "$accentBackground",
+  ...props
+}: AppHeaderProps) {
   const insets = useSafeAreaInsets();
 
   return (
     <XStack
       pt={insets.top}
-      height={50 + insets.top}
-      bg="$accentBackground"
+      height={45 + insets.top}
+      bg={bg}
       justify="space-between"
       items="center"
       px="$4"
+      {...props}
     >
-      <ActionButton {...headerLeft} />
+      {leftChildren}
       <Text color="white" fontSize="$6" fontWeight="600">
         ConfessBay
       </Text>
-      <ActionButton {...headerRight} />
+      {rightChildren}
     </XStack>
   );
 }

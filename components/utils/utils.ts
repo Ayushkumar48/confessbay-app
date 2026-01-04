@@ -1,15 +1,17 @@
 export function formatDate(
-  date: Date,
+  date: Date | string,
   type: "short" | "long" = "long",
 ): string {
-  if (!(date instanceof Date) || isNaN(date.getTime())) {
+  const d = typeof date === "string" ? new Date(date) : date;
+
+  if (!(d instanceof Date) || isNaN(d.getTime())) {
     return "";
   }
 
-  return date.toLocaleDateString(undefined, {
+  return d.toLocaleDateString(undefined, {
     year: "numeric",
     month: type === "long" ? "long" : "short",
-    day: "2-digit",
+    day: "numeric",
   });
 }
 

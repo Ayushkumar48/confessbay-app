@@ -1,11 +1,13 @@
-import { Redirect, Tabs } from "expo-router";
+import { Redirect } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "tamagui";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TabIcon from "@/components/custom/tab-icon";
 import { useAuth } from "$lib/context/auth";
-import AppHeader from "@/components/custom/navbar/app-header";
-import { headerItems, hiddenItems } from "@/components/custom/navbar/utils";
+import { headerItems } from "@/components/custom/navbar/utils";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+
+const Tab = createMaterialTopTabNavigator();
 
 export default function TabLayout() {
   const { user } = useAuth();
@@ -28,9 +30,12 @@ export default function TabLayout() {
         backgroundColor={theme.accent2.get()}
         style="light"
       />
-
-      <Tabs
+      <Tab.Navigator
+        tabBarPosition="bottom"
         screenOptions={{
+          swipeEnabled: true,
+          lazy: true,
+          lazyPreloadDistance: 0,
           tabBarShowLabel: false,
           tabBarActiveTintColor: theme.accentBackground.get(),
           tabBarInactiveTintColor: theme.gray?.get(),
@@ -39,38 +44,32 @@ export default function TabLayout() {
             height: 56,
             paddingTop: 2,
             borderTopColor: theme.borderColor.get(),
+            backgroundColor: theme.background.get(),
+          },
+          tabBarIndicatorStyle: {
+            display: "none",
           },
         }}
       >
         {headerItems.map((item, index) => (
-          <Tabs.Screen
+          <Tab.Screen
             key={index}
             name={item.pagename}
+            component={item.component}
             options={{
-              header: () => <AppHeader {...item} />,
               title: item.label,
-              tabBarIcon: ({ focused, size }) => (
+              tabBarIcon: ({ focused }) => (
                 <TabIcon
                   focused={focused}
                   Icon={item.icon}
-                  size={size}
+                  size={24}
                   activeColor="$accentBackground"
                 />
               ),
             }}
           />
         ))}
-
-        {hiddenItems.map((item) => (
-          <Tabs.Screen
-            key={item}
-            name={item}
-            options={{
-              href: null,
-            }}
-          />
-        ))}
-      </Tabs>
+      </Tab.Navigator>
     </SafeAreaView>
   );
 }
