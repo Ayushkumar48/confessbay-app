@@ -6,9 +6,17 @@ import { createTamagui } from "tamagui";
 export const config = createTamagui({
   ...defaultConfig,
   animations: createAnimations({
+    "100ms": {
+      type: "timing",
+      duration: 100,
+    },
+    "200ms": {
+      type: "timing",
+      duration: 200,
+    },
     fast: {
       type: "spring",
-      damping: 20,
+      damping: 25,
       mass: 1.2,
       stiffness: 250,
     },
@@ -28,6 +36,10 @@ export const config = createTamagui({
       damping: 16,
       stiffness: 140,
       mass: 0.9,
+    },
+    quick: {
+      type: "timing",
+      duration: 150,
     },
   }),
   themes,

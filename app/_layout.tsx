@@ -12,6 +12,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { Provider } from "components/Provider";
 import { ClientShell, useAuth } from "$lib/context/auth";
 import { useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -61,7 +62,11 @@ function AuthBootstrap({ children }: { children: React.ReactNode }) {
 }
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-  return <Provider>{children}</Provider>;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Provider>{children}</Provider>
+    </GestureHandlerRootView>
+  );
 };
 
 function RootLayoutNav() {
