@@ -1,4 +1,4 @@
-import { Redirect } from "expo-router";
+import { Redirect, usePathname } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useTheme } from "tamagui";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,6 +11,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function TabLayout() {
   const { user } = useAuth();
+  const pathname = usePathname();
   const theme = useTheme();
 
   if (!user) {
@@ -27,7 +28,11 @@ export default function TabLayout() {
     >
       <StatusBar
         translucent={false}
-        backgroundColor={theme.accent2.get()}
+        backgroundColor={
+          pathname === "/profile"
+            ? theme.accentColor.get()
+            : theme.accent2.get()
+        }
         style="light"
       />
       <Tab.Navigator

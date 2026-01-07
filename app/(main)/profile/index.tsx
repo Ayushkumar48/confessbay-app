@@ -6,12 +6,12 @@ import {
   YStack,
   XStack,
   Separator,
+  useTheme,
 } from "tamagui";
 import {
   Heart,
   MapPin,
   GraduationCap,
-  Calendar,
   Lock,
   Edit3,
   LogOut,
@@ -22,33 +22,136 @@ import {
 } from "@tamagui/lucide-icons";
 import { useAuth, User as UserType } from "$lib/context/auth";
 import { formatDate } from "@/components/utils/utils";
-import AppHeader from "@/components/custom/navbar/app-header";
 import ProfileStats from "@/components/custom/profile/profile-stats";
+import Svg, { Circle } from "react-native-svg";
 
-function ProfileHeader({ user }: { user: UserType }) {
+function calculateProfileCompletion(user: UserType): number {
+  let completed = 0;
+  let total = 10;
+
+  if (user.firstName) completed++;
+  if (user.lastName) completed++;
+  if (user.bio) completed++;
+  if (user.avatar) completed++;
+  if (user.city) completed++;
+  if (user.gender) completed++;
+  if (user.zodiacSign) completed++;
+  if (user.phoneNumber) completed++;
+  if (user.collegeId) completed++;
+  if (user.emailVerified) completed++;
+
+  return Math.round((completed / total) * 100);
+}
+
+function CircularProgress({
+  percentage,
+  size = 120,
+  strokeWidth = 9,
+  userAvatar,
+}: {
+  percentage: number;
+  size?: number;
+  strokeWidth?: number;
+  userAvatar: string;
+}) {
+  const theme = useTheme();
+  const accentColor = theme.accentBackground.get();
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
   return (
-    <XStack pt="$4" justify="space-between">
-      <XStack gap="$4" items="center">
-        <Avatar size="$10" circular borderWidth={2} borderColor="purple">
-          <Avatar.Image src={user.avatar} />
-          <Avatar.Fallback bg="purple">
+    <YStack
+      position="relative"
+      width={size}
+      height={size}
+      items="center"
+      justify="center"
+    >
+      <Svg
+        width={size}
+        height={size}
+        style={{ transform: [{ rotate: "-90deg" }] }}
+      >
+        {/* Background circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="rgba(255, 255, 255, 0.2)"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        {/* Progress circle */}
+        <Circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={accentColor}
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={strokeDashoffset}
+          strokeLinecap="round"
+        />
+      </Svg>
+      <YStack
+        position="absolute"
+        width={size}
+        height={size}
+        items="center"
+        justify="center"
+      >
+        <Avatar size="$10">
+          <Avatar.Image src={userAvatar} />
+          <Avatar.Fallback>
             <User size={40} color="white" />
           </Avatar.Fallback>
         </Avatar>
+        {/* Percentage badge */}
+        <YStack
+          position="absolute"
+          b={-2}
+          bg="#FFD700"
+          px="$2"
+          rounded="$8"
+          borderWidth={0.5}
+          borderColor="white"
+        >
+          <Text fontSize="$2" fontWeight="800" color="black">
+            {percentage}%
+          </Text>
+        </YStack>
+      </YStack>
+    </YStack>
+  );
+}
+
+function ProfileHeader({ user }: { user: UserType }) {
+  const completionPercentage = calculateProfileCompletion(user);
+
+  return (
+    <YStack gap="$2" py="$4" mb="$2" items="center" bg="$accentColor">
+      <YStack gap="$2" items="center">
+        <XStack items="center" gap="$1">
+          <Text fontSize="$5" fontWeight="700" color="white">
+            {user.firstName} {user.lastName || ""}
+          </Text>
+          {user.anonymous && <Lock size={16} color="white" />}
+        </XStack>
+
+        <Text fontSize="$3" color="white" fontWeight="500">
+          @{user.username}
+        </Text>
+      </YStack>
+      <XStack gap="$4" items="center">
+        <CircularProgress
+          percentage={completionPercentage}
+          userAvatar={user.avatar}
+        />
       </XStack>
 
       <YStack gap="$2">
-        <XStack items="center" gap="$2">
-          <Text fontSize="$5" fontWeight="700" color="$color">
-            {user.firstName} {user.lastName || ""}
-          </Text>
-          {user.anonymous && <Lock size={16} color="gray" />}
-        </XStack>
-
-        <Text fontSize="$3" color="gray" fontWeight="500">
-          @{user.username}
-        </Text>
-
         {user.bio && (
           <Text fontSize="$4" color="$color" lineHeight="$4">
             {user.bio}
@@ -87,25 +190,9 @@ function ProfileHeader({ user }: { user: UserType }) {
               </Text>
             </XStack>
           )}
-
-          {user.dateOfBirth && (
-            <XStack
-              bg="lightgray"
-              px="$2.5"
-              py="$1.5"
-              rounded="$2"
-              items="center"
-              gap="$1.5"
-            >
-              <Calendar size={12} color="black" />
-              <Text fontSize="$2" color="black" fontWeight="500">
-                {formatDate(user.dateOfBirth, "short")}
-              </Text>
-            </XStack>
-          )}
         </XStack>
       </YStack>
-    </XStack>
+    </YStack>
   );
 }
 
@@ -114,22 +201,24 @@ function ProfileActions() {
     <XStack gap="$2">
       <Button
         width="48%"
-        size="$3"
+        size="$2"
         bg="$accentBackground"
         color="white"
         fontWeight="700"
         iconAfter={<Edit3 size={16} />}
+        rounded="$12"
       >
         Edit Profile
       </Button>
 
       <Button
         width="48%"
-        size="$3"
+        size="$2"
         bg="lightgray"
         color="$color"
         fontWeight="700"
         iconAfter={<Share size={16} />}
+        rounded="$12"
       >
         Share Profile
       </Button>
@@ -319,9 +408,8 @@ export default function ProfilePage() {
 
   return (
     <ScrollView flex={1} bg="$background">
-      <AppHeader justify="center" />
+      <ProfileHeader user={user} />
       <YStack gap="$4" px="$2">
-        <ProfileHeader user={user} />
         <ProfileActions />
         <ProfileStats totalConfessions={user.totalConfessions} />
         <Separator />

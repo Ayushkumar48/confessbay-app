@@ -8,7 +8,6 @@ import {
   useTheme,
 } from "tamagui";
 import { KeyboardAvoidingView, Platform } from "react-native";
-import { Eye, EyeOff } from "@tamagui/lucide-icons";
 import { validateForm } from "$lib/client/validate-form";
 import { loginSchema } from "$lib/client/schema";
 import FormField from "@/components/custom/form-fields/form-field";
@@ -28,7 +27,6 @@ export default function Page() {
   const theme = useTheme();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -134,28 +132,16 @@ export default function Page() {
                 exitStyle={{ opacity: 0, x: -12 }}
                 error={errors.password?.[0] ?? null}
               >
-                <XStack items="center" gap="$2" width="100%">
-                  <TextInput
-                    flex={1}
-                    placeholder="••••••••"
-                    value={password}
-                    onChangeText={onPasswordChange}
-                    secureTextEntry={!showPassword}
-                    size="$4"
-                    rounded="$3"
-                    bg="$background"
-                    id="password"
-                  />
-                  <Button
-                    size="$3"
-                    circular
-                    icon={showPassword ? EyeOff : Eye}
-                    onPress={() => setShowPassword((s) => !s)}
-                    pressStyle={{ scale: 0.95 }}
-                    enterStyle={{ opacity: 0, scale: 0.9 }}
-                    exitStyle={{ opacity: 0, scale: 0.9 }}
-                  />
-                </XStack>
+                <TextInput
+                  flex={1}
+                  placeholder="••••••••"
+                  value={password}
+                  onChangeText={onPasswordChange}
+                  size="$4"
+                  rounded="$3"
+                  bg="$background"
+                  id="password"
+                />
               </FormField>
 
               {error &&

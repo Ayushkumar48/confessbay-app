@@ -189,8 +189,8 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
                 unstyled
                 value="confessions"
                 onInteraction={handleOnInteraction}
-                paddingVertical="$2"
-                paddingHorizontal="$3"
+                paddingVertical="$1"
+                paddingHorizontal="$3.5"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -205,8 +205,8 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
                 unstyled
                 value="followers"
                 onInteraction={handleOnInteraction}
-                paddingVertical="$2"
-                paddingHorizontal="$3"
+                paddingVertical="$1"
+                paddingHorizontal="$3.5"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -221,8 +221,8 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
                 unstyled
                 value="followings"
                 onInteraction={handleOnInteraction}
-                paddingVertical="$2"
-                paddingHorizontal="$3"
+                paddingVertical="$1"
+                paddingHorizontal="$3.5"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">

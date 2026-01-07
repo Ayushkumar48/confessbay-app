@@ -26,7 +26,7 @@ export default function AppHeader({
       {...props}
     >
       {leftChildren}
-      <Text color="white" fontSize="$6" fontWeight="600">
+      <Text color="white" fontSize="$6" fontWeight="800">
         ConfessBay
       </Text>
       {rightChildren}
