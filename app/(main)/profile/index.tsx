@@ -19,7 +19,9 @@ import {
 } from "@tamagui/lucide-icons";
 import { useAuth, User as UserType } from "$lib/context/auth";
 import ProfileStats from "@/components/custom/profile/profile-stats";
+import ShareProfileSheet from "@/components/custom/profile/share-profile-sheet";
 import Svg, { Circle } from "react-native-svg";
+import { useState } from "react";
 
 function calculateProfileCompletion(user: UserType): number {
   let completed = 0;
@@ -192,57 +194,68 @@ function ProfileHeader({ user }: { user: UserType }) {
   );
 }
 
-function ProfileActions() {
-  return (
-    <XStack gap="$2" px="$2">
-      <Button
-        width="48%"
-        size="$2"
-        bg="$accentBackground"
-        color="white"
-        fontWeight="700"
-        borderWidth={2}
-        borderColor="white"
-        icon={<Edit3 size={16} />}
-        rounded="$12"
-      >
-        Edit Profile
-      </Button>
+function ProfileActions({ username }: { username: string }) {
+  const [shareSheetOpen, setShareSheetOpen] = useState(false);
 
-      <Button
-        width="48%"
-        size="$2"
-        bg="lightgray"
-        color="$color"
-        fontWeight="700"
-        icon={<QrCode size={16} />}
-        rounded="$12"
-      >
-        Share Profile
-      </Button>
-    </XStack>
+  return (
+    <>
+      <XStack gap="$2" px="$2">
+        <Button
+          width="48%"
+          size="$2"
+          bg="$accentBackground"
+          color="white"
+          fontWeight="700"
+          borderWidth={2}
+          borderColor="white"
+          icon={<Edit3 size={16} />}
+          rounded="$12"
+        >
+          Edit Profile
+        </Button>
+
+        <Button
+          width="48%"
+          size="$2"
+          bg="lightgray"
+          color="$color"
+          fontWeight="700"
+          icon={<QrCode size={16} />}
+          rounded="$12"
+          onPress={() => setShareSheetOpen(true)}
+        >
+          Share Profile
+        </Button>
+      </XStack>
+
+      <ShareProfileSheet
+        open={shareSheetOpen}
+        onOpenChange={setShareSheetOpen}
+        username={username}
+      />
+    </>
   );
 }
 
-// function LogoutSection({ logout }: { logout: () => void }) {
-//   return (
-//     <YStack px="$4" pb="$6" pt="$2">
-//       <Button
-//         size="$4"
-//         bg="transparent"
-//         borderWidth={1}
-//         borderColor="$red10"
-//         color="$red10"
-//         fontWeight="700"
-//         pressStyle={{ bg: "$red2" }}
-//         iconAfter={<LogOut size={18} />}
-//         onPress={logout}
-//       >
-//         Logout
-//       </Button>
-//     </YStack>
-//   );
-// }
+function LogoutSection({ logout }: { logout: () => void }) {
+  return (
+    <YStack px="$4" pb="$6" pt="$2">
+      <Button
+        size="$4"
+        bg="transparent"
+        borderWidth={1}
+        borderColor="$red10"
+        color="$red10"
+        fontWeight="700"
+        pressStyle={{ bg: "$red2" }}
+        iconAfter={<LogOut size={18} />}
+        onPress={logout}
+      >
+        Logout
+      </Button>
+    </YStack>
+  );
+}
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -253,13 +266,13 @@ export default function ProfilePage() {
     <ScrollView flex={1} bg="$background">
       <YStack bg="$accentColor" gap="$4" py="$4">
         <ProfileHeader user={user} />
-        <ProfileActions />
+        <ProfileActions username={user.username} />
       </YStack>
       <Separator />
       <YStack gap="$4" px="$2" pt="$2">
         <ProfileStats />
         <Separator />
-        {/*<LogoutSection logout={logout} />*/}
+        <LogoutSection logout={logout} />
         <YStack height="$4" />
       </YStack>
     </ScrollView>
