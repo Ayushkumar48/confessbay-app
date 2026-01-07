@@ -1,7 +1,6 @@
 import React from "react";
 import {
   AnimatePresence,
-  H5,
   Tabs,
   Text,
   XStack,
@@ -15,8 +14,22 @@ import {
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useQuery } from "@tanstack/react-query";
 import { apiFetch } from "$lib/secure/interceptor";
-import { ProfilePageLoadSchema } from "$lib/server/additional-schema";
+import {
+  ProfilePageLoadSchema,
+  type GetMyConfessionPostsResponseSchema,
+  type UserFriendsItemSchema,
+  type UserFollowersItemSchema,
+  type UserFollowingsItemSchema,
+} from "$lib/server/additional-schema";
+import type { z } from "zod";
 
+// Types
+type ConfessionsData = z.infer<typeof GetMyConfessionPostsResponseSchema>;
+type FriendsData = z.infer<typeof UserFriendsItemSchema>[];
+type FollowersData = z.infer<typeof UserFollowersItemSchema>[];
+type FollowingsData = z.infer<typeof UserFollowingsItemSchema>[];
+
+// Styled Components
 const TabsRovingIndicator = ({
   active,
   ...props
@@ -65,6 +78,159 @@ const AnimatedYStack = styled(YStack, {
   } as const,
 });
 
+// Empty State Component
+const EmptyState = ({ message }: { message: string }) => (
+  <YStack items="center" justify="center" flex={1} gap="$2">
+    <Text color="gray" fontSize="$4">
+      {message}
+    </Text>
+  </YStack>
+);
+
+// Tab Content Components
+const ConfessionsTab = ({ data }: { data: ConfessionsData }) => {
+  return (
+    <YStack flex={1} p="$4" gap="$3">
+      <Text fontSize="$6" fontWeight="700">
+        Confessions ({data.length})
+      </Text>
+      {data.length === 0 ? (
+        <EmptyState message="No confessions yet" />
+      ) : (
+        <YStack gap="$2">
+          {data.map((item) => (
+            <YStack
+              key={item.confession.id}
+              p="$3"
+              bg="$background"
+              rounded="$3"
+              borderWidth={1}
+              borderColor="$borderColor"
+            >
+              <Text numberOfLines={2}>{item.confession.message}</Text>
+              <Text fontSize="$2" color="gray" mt="$2">
+                {new Date(item.confession.createdAt).toLocaleDateString()}
+              </Text>
+            </YStack>
+          ))}
+        </YStack>
+      )}
+    </YStack>
+  );
+};
+
+const FriendsTab = ({ data }: { data: FriendsData }) => {
+  return (
+    <YStack flex={1} p="$4" gap="$3">
+      <Text fontSize="$6" fontWeight="700">
+        Friends ({data.length})
+      </Text>
+      {data.length === 0 ? (
+        <EmptyState message="No friends yet" />
+      ) : (
+        <YStack gap="$2">
+          {data.map((item) => (
+            <XStack
+              key={item.friends.id}
+              p="$3"
+              bg="$background"
+              rounded="$3"
+              borderWidth={1}
+              borderColor="$borderColor"
+              items="center"
+              gap="$3"
+            >
+              <YStack flex={1}>
+                <Text fontWeight="600">
+                  {item.user.firstName} {item.user.lastName}
+                </Text>
+                <Text fontSize="$2" color="gray">
+                  @{item.user.username}
+                </Text>
+              </YStack>
+            </XStack>
+          ))}
+        </YStack>
+      )}
+    </YStack>
+  );
+};
+
+const FollowersTab = ({ data }: { data: FollowersData }) => {
+  return (
+    <YStack flex={1} p="$4" gap="$3">
+      <Text fontSize="$6" fontWeight="700">
+        Followers ({data.length})
+      </Text>
+      {data.length === 0 ? (
+        <EmptyState message="No followers yet" />
+      ) : (
+        <YStack gap="$2">
+          {data.map((item) => (
+            <XStack
+              key={`${item.followers.followerId}-${item.followers.followingId}`}
+              p="$3"
+              bg="$background"
+              rounded="$3"
+              borderWidth={1}
+              borderColor="$borderColor"
+              items="center"
+              gap="$3"
+            >
+              <YStack flex={1}>
+                <Text fontWeight="600">
+                  {item.user.firstName} {item.user.lastName}
+                </Text>
+                <Text fontSize="$2" color="gray">
+                  @{item.user.username}
+                </Text>
+              </YStack>
+            </XStack>
+          ))}
+        </YStack>
+      )}
+    </YStack>
+  );
+};
+
+const FollowingTab = ({ data }: { data: FollowingsData }) => {
+  return (
+    <YStack flex={1} p="$4" gap="$3">
+      <Text fontSize="$6" fontWeight="700">
+        Following ({data.length})
+      </Text>
+      {data.length === 0 ? (
+        <EmptyState message="Not following anyone yet" />
+      ) : (
+        <YStack gap="$2">
+          {data.map((item) => (
+            <XStack
+              key={`${item.following.followerId}-${item.following.followingId}`}
+              p="$3"
+              bg="$background"
+              rounded="$3"
+              borderWidth={1}
+              borderColor="$borderColor"
+              items="center"
+              gap="$3"
+            >
+              <YStack flex={1}>
+                <Text fontWeight="600">
+                  {item.user.firstName} {item.user.lastName}
+                </Text>
+                <Text fontSize="$2" color="gray">
+                  @{item.user.username}
+                </Text>
+              </YStack>
+            </XStack>
+          ))}
+        </YStack>
+      )}
+    </YStack>
+  );
+};
+
+// Main Component
 export default function ProfileStats() {
   const { data, isLoading, error } = useQuery({
     queryKey: ["profile-stats"],
@@ -223,7 +389,7 @@ export default function ProfileStats() {
                 value="confessions"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
-                paddingHorizontal="$3.5"
+                paddingHorizontal="$2"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -239,7 +405,7 @@ export default function ProfileStats() {
                 value="friends"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
-                paddingHorizontal="$3.5"
+                paddingHorizontal="$2"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -255,7 +421,7 @@ export default function ProfileStats() {
                 value="followers"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
-                paddingHorizontal="$3.5"
+                paddingHorizontal="$2"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -271,7 +437,7 @@ export default function ProfileStats() {
                 value="following"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
-                paddingHorizontal="$3.5"
+                paddingHorizontal="$2"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
@@ -293,10 +459,26 @@ export default function ProfileStats() {
               custom={{ direction }}
               initial={false}
             >
-              <AnimatedYStack key={currentTab}>
-                <Tabs.Content value={currentTab} forceMount flex={1}>
-                  <H5>{currentTab}</H5>
-                </Tabs.Content>
+              <AnimatedYStack key={currentTab} flex={1}>
+                {data && (
+                  <>
+                    {currentTab === "confessions" && (
+                      <ConfessionsTab data={data.allConfessions} />
+                    )}
+
+                    {currentTab === "friends" && (
+                      <FriendsTab data={data.allFriends} />
+                    )}
+
+                    {currentTab === "followers" && (
+                      <FollowersTab data={data.followers} />
+                    )}
+
+                    {currentTab === "following" && (
+                      <FollowingTab data={data.following} />
+                    )}
+                  </>
+                )}
               </AnimatedYStack>
             </AnimatePresence>
           </YStack>

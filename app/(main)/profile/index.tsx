@@ -224,25 +224,25 @@ function ProfileActions() {
   );
 }
 
-function LogoutSection({ logout }: { logout: () => void }) {
-  return (
-    <YStack px="$4" pb="$6" pt="$2">
-      <Button
-        size="$4"
-        bg="transparent"
-        borderWidth={1}
-        borderColor="$red10"
-        color="$red10"
-        fontWeight="700"
-        pressStyle={{ bg: "$red2" }}
-        iconAfter={<LogOut size={18} />}
-        onPress={logout}
-      >
-        Logout
-      </Button>
-    </YStack>
-  );
-}
+// function LogoutSection({ logout }: { logout: () => void }) {
+//   return (
+//     <YStack px="$4" pb="$6" pt="$2">
+//       <Button
+//         size="$4"
+//         bg="transparent"
+//         borderWidth={1}
+//         borderColor="$red10"
+//         color="$red10"
+//         fontWeight="700"
+//         pressStyle={{ bg: "$red2" }}
+//         iconAfter={<LogOut size={18} />}
+//         onPress={logout}
+//       >
+//         Logout
+//       </Button>
+//     </YStack>
+//   );
+// }
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -259,7 +259,7 @@ export default function ProfilePage() {
       <YStack gap="$4" px="$2" pt="$2">
         <ProfileStats />
         <Separator />
-        <LogoutSection logout={logout} />
+        {/*<LogoutSection logout={logout} />*/}
         <YStack height="$4" />
       </YStack>
     </ScrollView>
