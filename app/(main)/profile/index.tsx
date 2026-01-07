@@ -9,19 +9,15 @@ import {
   useTheme,
 } from "tamagui";
 import {
-  Heart,
   MapPin,
   GraduationCap,
   Lock,
   Edit3,
   LogOut,
   User,
-  Grid,
-  Shield,
-  Share,
+  QrCode,
 } from "@tamagui/lucide-icons";
 import { useAuth, User as UserType } from "$lib/context/auth";
-import { formatDate } from "@/components/utils/utils";
 import ProfileStats from "@/components/custom/profile/profile-stats";
 import Svg, { Circle } from "react-native-svg";
 
@@ -131,7 +127,7 @@ function ProfileHeader({ user }: { user: UserType }) {
   const completionPercentage = calculateProfileCompletion(user);
 
   return (
-    <YStack gap="$2" py="$4" mb="$2" items="center" bg="$accentColor">
+    <YStack gap="$2" items="center">
       <YStack gap="$2" items="center">
         <XStack items="center" gap="$1">
           <Text fontSize="$5" fontWeight="700" color="white">
@@ -198,14 +194,16 @@ function ProfileHeader({ user }: { user: UserType }) {
 
 function ProfileActions() {
   return (
-    <XStack gap="$2">
+    <XStack gap="$2" px="$2">
       <Button
         width="48%"
         size="$2"
         bg="$accentBackground"
         color="white"
         fontWeight="700"
-        iconAfter={<Edit3 size={16} />}
+        borderWidth={2}
+        borderColor="white"
+        icon={<Edit3 size={16} />}
         rounded="$12"
       >
         Edit Profile
@@ -217,167 +215,12 @@ function ProfileActions() {
         bg="lightgray"
         color="$color"
         fontWeight="700"
-        iconAfter={<Share size={16} />}
+        icon={<QrCode size={16} />}
         rounded="$12"
       >
         Share Profile
       </Button>
     </XStack>
-  );
-}
-
-function AboutSection({ user }: { user: UserType }) {
-  return (
-    <YStack px="$4" gap="$3">
-      <Text fontSize="$5" fontWeight="700" color="$color">
-        About
-      </Text>
-      <YStack gap="$3">
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Gender
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {user.gender || "—"}
-          </Text>
-        </XStack>
-
-        <Separator />
-
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Zodiac
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {user.zodiacSign || "—"}
-          </Text>
-        </XStack>
-
-        <Separator />
-
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Open to relationships
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {user.openToRelationships ? "Yes" : "No"}
-          </Text>
-        </XStack>
-
-        <Separator />
-
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Phone
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {user.phoneNumber}
-          </Text>
-        </XStack>
-      </YStack>
-    </YStack>
-  );
-}
-
-function AccountSection({ user }: { user: UserType }) {
-  return (
-    <YStack px="$4" gap="$3">
-      <Text fontSize="$5" fontWeight="700" color="$color">
-        Account
-      </Text>
-
-      <YStack gap="$3">
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Joined
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {formatDate(user.createdAt, "short")}
-          </Text>
-        </XStack>
-
-        <Separator />
-
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Email
-            </Text>
-          </XStack>
-          <XStack items="center" gap="$2">
-            {user.emailVerified && (
-              <Shield size={14} color="$green10" fill="$green10" />
-            )}
-            <Text fontSize="$4" color="$color" fontWeight="600">
-              {user.email}
-            </Text>
-          </XStack>
-        </XStack>
-
-        <Separator />
-
-        <XStack justify="space-between" py="$2.5">
-          <XStack items="center" gap="$2" flex={1}>
-            <Text fontSize="$3" color="gray" fontWeight="500">
-              Location
-            </Text>
-          </XStack>
-          <Text fontSize="$4" color="$color" fontWeight="600">
-            {user.city || "Not specified"}
-          </Text>
-        </XStack>
-      </YStack>
-    </YStack>
-  );
-}
-
-function RecentConfessions() {
-  return (
-    <YStack px="$4" gap="$3">
-      <XStack gap="$4" justify="space-around" py="$2">
-        <YStack items="center" gap="$2" flex={1} pressStyle={{ opacity: 0.7 }}>
-          <Grid size={24} color="purple" />
-          <Text fontSize="$2" color="purple" fontWeight="600">
-            Recent Confessions
-          </Text>
-        </YStack>
-      </XStack>
-
-      <YStack items="center" justify="center" py="$8" gap="$3">
-        <YStack
-          bg="gray"
-          p="$4"
-          rounded="$12"
-          items="center"
-          justify="center"
-          width={80}
-          height={80}
-        >
-          <Heart size={40} color="gray" strokeWidth={1.5} />
-        </YStack>
-        <Text
-          fontSize="$5"
-          fontWeight="700"
-          color="$color"
-          verticalAlign="center"
-        >
-          My Recent Confessions
-        </Text>
-        <Text fontSize="$3" color="gray" verticalAlign="center" maxW={280}>
-          No confessions yet. Start sharing!
-        </Text>
-      </YStack>
-    </YStack>
   );
 }
 
@@ -408,16 +251,14 @@ export default function ProfilePage() {
 
   return (
     <ScrollView flex={1} bg="$background">
-      <ProfileHeader user={user} />
-      <YStack gap="$4" px="$2">
+      <YStack bg="$accentColor" gap="$4" py="$4">
+        <ProfileHeader user={user} />
         <ProfileActions />
-        <ProfileStats totalConfessions={user.totalConfessions} />
+      </YStack>
+      <Separator />
+      <YStack gap="$4" px="$2" pt="$2">
+        <ProfileStats />
         <Separator />
-        <AboutSection user={user} />
-        <Separator />
-        <AccountSection user={user} />
-        <Separator />
-        <RecentConfessions />
         <LogoutSection logout={logout} />
         <YStack height="$4" />
       </YStack>

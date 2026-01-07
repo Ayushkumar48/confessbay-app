@@ -13,6 +13,7 @@ import { Provider } from "components/Provider";
 import { ClientShell, useAuth } from "$lib/context/auth";
 import { useEffect, useState } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -61,10 +62,14 @@ function AuthBootstrap({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
+const queryClient = new QueryClient();
+
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider>{children}</Provider>
+      <QueryClientProvider client={queryClient}>
+        <Provider>{children}</Provider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 };

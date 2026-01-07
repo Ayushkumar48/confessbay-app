@@ -7,15 +7,15 @@ import {
   XStack,
   YStack,
   styled,
+  Spinner,
   type TabsTabProps,
   type TabLayout,
   type StackProps,
 } from "tamagui";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-
-type ProfileStatsProps = {
-  totalConfessions: number;
-};
+import { useQuery } from "@tanstack/react-query";
+import { apiFetch } from "$lib/secure/interceptor";
+import { ProfilePageLoadSchema } from "$lib/server/additional-schema";
 
 const TabsRovingIndicator = ({
   active,
@@ -65,8 +65,20 @@ const AnimatedYStack = styled(YStack, {
   } as const,
 });
 
-export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
-  const tabs = ["confessions", "followers", "followings"];
+export default function ProfileStats() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["profile-stats"],
+    queryFn: async () => {
+      const response = await apiFetch("/api/profile");
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile data");
+      }
+      const json = await response.json();
+      return ProfilePageLoadSchema.parse(json);
+    },
+  });
+
+  const tabs = ["confessions", "friends", "followers", "following"];
 
   const [tabState, setTabState] = React.useState<{
     currentTab: string;
@@ -143,6 +155,27 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
     })
     .runOnJS(true);
 
+  if (isLoading) {
+    return (
+      <YStack flex={1} items="center" justify="center" p="$4">
+        <Spinner size="large" color="$color" />
+      </YStack>
+    );
+  }
+
+  if (error) {
+    return (
+      <YStack flex={1} items="center" justify="center" p="$4">
+        <Text color="$red10">Failed to load profile stats</Text>
+      </YStack>
+    );
+  }
+
+  const totalConfessions = data?.allConfessions.length ?? 0;
+  const totalFriends = data?.allFriends.length ?? 0;
+  const totalFollowers = data?.followers.length ?? 0;
+  const totalFollowing = data?.following.length ?? 0;
+
   return (
     <Tabs
       value={currentTab}
@@ -203,6 +236,22 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
               </Tabs.Tab>
               <Tabs.Tab
                 unstyled
+                value="friends"
+                onInteraction={handleOnInteraction}
+                paddingVertical="$1"
+                paddingHorizontal="$3.5"
+              >
+                <YStack items="center" gap="$0.25">
+                  <Text fontSize="$5" fontWeight="800" color="$color">
+                    {totalFriends}
+                  </Text>
+                  <Text fontSize="$1" color="gray" fontWeight="500">
+                    Friends
+                  </Text>
+                </YStack>
+              </Tabs.Tab>
+              <Tabs.Tab
+                unstyled
                 value="followers"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
@@ -210,7 +259,7 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
-                    0
+                    {totalFollowers}
                   </Text>
                   <Text fontSize="$1" color="gray" fontWeight="500">
                     Followers
@@ -219,14 +268,14 @@ export default function ProfileStats({ totalConfessions }: ProfileStatsProps) {
               </Tabs.Tab>
               <Tabs.Tab
                 unstyled
-                value="followings"
+                value="following"
                 onInteraction={handleOnInteraction}
                 paddingVertical="$1"
                 paddingHorizontal="$3.5"
               >
                 <YStack items="center" gap="$0.25">
                   <Text fontSize="$5" fontWeight="800" color="$color">
-                    0
+                    {totalFollowing}
                   </Text>
                   <Text fontSize="$1" color="gray" fontWeight="500">
                     Following
